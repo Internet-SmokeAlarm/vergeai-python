@@ -19,12 +19,9 @@ class ApiClient:
         data = {"group_name" : group_name}
         response = self._post(FedLearnConfig.CREATE_GROUP_PATH, data)
 
-        response.raise_for_status()
+        self._validate_response(response)
 
-        group_id = response.json()["group_id"]
-        group = Group(group_id)
-
-        return group
+        return Group(response.json()["group_id"])
 
     def delete_group(self, group_id):
         """
@@ -33,11 +30,9 @@ class ApiClient:
         data = {"group_id" : group_id}
         response = self._post(FedLearnConfig.DELETE_GROUP_PATH, data)
 
-        response.raise_for_status()
+        self._validate_response(response)
 
-        success = response.json()["success"]
-
-        return success
+        return response.json()["success"]
 
     def _post(self, url, json):
         """
@@ -45,3 +40,7 @@ class ApiClient:
         :param json: json
         """
         return requests.post(url, json=json)
+
+    def _validate_response(self, response):
+        if response.status_code == 400:
+            raise FedLearnApiException(response.text)
