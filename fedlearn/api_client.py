@@ -55,6 +55,22 @@ class ApiClient:
 
         return response.json()
 
+    def get_round_status(self, group_id, round_id):
+        """
+        :param group_id: string
+        :param round_id: string
+        """
+        data = {"group_id" : group_id, "round_id" : round_id}
+
+        response = self._get(FedLearnConfig.GET_ROUND_STATUS_PATH, data)
+
+        self._validate_response(response)
+
+        id = response.json()["learning_round"]["id"]
+        models = response.json()["learning_round"]["models"]
+
+        return LearningRound(id, models)
+
     def create_group(self, group_name):
         """
         :param group_name: string
@@ -89,7 +105,7 @@ class ApiClient:
 
         self._validate_response(response)
 
-        return LearningRound(response.json()["round_id"])
+        return LearningRound(response.json()["round_id"], [])
 
     def _post(self, url, json):
         """
@@ -97,6 +113,13 @@ class ApiClient:
         :param json: json
         """
         return requests.post(url, json=json)
+
+    def _get(self, url, json):
+        """
+        :param url: string
+        :param json: json
+        """
+        return requests.get(url, json=json)
 
     def _validate_response(self, response):
         if response.status_code == 200:

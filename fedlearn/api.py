@@ -34,6 +34,15 @@ class FedLearnApi:
         """
         return self.api_client.create_group(group_name)
 
+    def get_round_status(self, group_id, round_id):
+        """
+        Gets the information associated with a learning round.
+
+        :param group_id: string. Group ID
+        :param round_id: string. Learning round ID
+        """
+        return self.api_client.get_round_status(group_id, round_id)
+
     def register_device(self, group_id):
         """
         Register a new device with a Federated Learning group.

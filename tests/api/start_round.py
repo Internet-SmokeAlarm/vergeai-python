@@ -4,7 +4,7 @@ from fedlearn import FedLearnApi
 from fedlearn.exceptions import FedLearnApiException
 from fedlearn.exceptions import FedLearnException
 
-class LearningRoundManagementTestCase(unittest.TestCase):
+class StartRoundTestCase(unittest.TestCase):
 
     def test_start_round_pass(self):
         # TODO : Add test key below
