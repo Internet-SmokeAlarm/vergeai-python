@@ -24,3 +24,12 @@ class FedLearnApi:
         :returns: Success/Failure Boolean
         """
         return self.api_client.delete_group(group_id)
+
+    def start_round(self, group_id):
+        """
+        Start a new learning round.
+
+        :param group_id: string. Group ID
+        :returns: A LearningRound
+        """
+        return self.api_client.start_round(group_id)

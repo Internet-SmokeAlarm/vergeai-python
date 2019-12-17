@@ -1,1 +1,2 @@
 from .group_management import GroupManagementTestCase
+from .learning_round_management import LearningRoundManagementTestCase

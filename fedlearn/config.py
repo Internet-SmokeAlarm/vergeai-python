@@ -6,3 +6,5 @@ class FedLearnConfig:
 
     CREATE_GROUP_PATH = PROD_ENDPOINT + "api/v1/group/create"
     DELETE_GROUP_PATH = PROD_ENDPOINT + "api/v1/group/delete"
+
+    START_ROUND_PATH = PROD_ENDPOINT + "api/v1/round/start"
