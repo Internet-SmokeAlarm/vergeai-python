@@ -7,6 +7,16 @@ class FedLearnApi:
 
         self.api_client = ApiClient(api_key)
 
+    def submit_model_update(self, group_id, round_id, device_id):
+        """
+        Submit device model update.
+
+        :param group_id: string. ID of group
+        :param round_id: string. ID of learning round
+        :param device_id: string. ID of device submitting update
+        """
+        return self.api_client.submit_model_update(group_id, round_id, device_id)
+
     def create_group(self, group_name):
         """
         Create a Federated Learning group.

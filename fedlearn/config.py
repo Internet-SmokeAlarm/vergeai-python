@@ -10,3 +10,5 @@ class FedLearnConfig:
     START_ROUND_PATH = PROD_ENDPOINT + "api/v1/round/start"
 
     REGISTER_DEVICE_PATH = PROD_ENDPOINT + "api/v1/device/register"
+
+    SUBMIT_MODEL_UPDATE_PATH = PROD_ENDPOINT + "api/v1/submit_model_update"

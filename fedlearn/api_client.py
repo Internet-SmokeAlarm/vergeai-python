@@ -29,6 +29,20 @@ class ApiClient:
 
         return Device(device_id, device_api_key)
 
+    def submit_model_update(self, group_id, round_id, device_id):
+        """
+        :param group_id: string
+        :param round_id: string
+        :param device_id: string
+        :return: json. Dictionary that contains information necessary to submit model
+        """
+        data = {"group_id" : group_id, "round_id" : round_id, "device_id" : device_id}
+        response = self._post(FedLearnConfig.SUBMIT_MODEL_UPDATE_PATH, data)
+
+        self._validate_response(response)
+
+        return response.json()
+
     def create_group(self, group_name):
         """
         :param group_name: string
