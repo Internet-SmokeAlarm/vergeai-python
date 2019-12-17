@@ -43,6 +43,18 @@ class ApiClient:
 
         return response.json()
 
+    def submit_initial_group_model(self, group_id):
+        """
+        :param group_id: string
+        :return: json. Dictionary that contains information necessary to submit model
+        """
+        data = {"group_id" : group_id}
+        response = self._post(FedLearnConfig.SUBMIT_INITIAL_GROUP_MODEL_PATH, data)
+
+        self._validate_response(response)
+
+        return response.json()
+
     def create_group(self, group_name):
         """
         :param group_name: string

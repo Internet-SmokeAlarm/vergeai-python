@@ -17,6 +17,14 @@ class FedLearnApi:
         """
         return self.api_client.submit_model_update(group_id, round_id, device_id)
 
+    def submit_initial_group_model(self, group_id):
+        """
+        Submit the initial model for a Federated Learning group.
+
+        :param group_id: string. ID of group
+        """
+        return self.api_client.submit_initial_group_model(group_id)
+
     def create_group(self, group_name):
         """
         Create a Federated Learning group.
