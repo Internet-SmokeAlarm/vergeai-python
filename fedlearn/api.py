@@ -1,5 +1,7 @@
 from .api_client import ApiClient
 
+from .exceptions import FedLearnApiException
+
 class FedLearnApi:
 
     def __init__(self, api_key):
@@ -16,6 +18,22 @@ class FedLearnApi:
         :param device_id: string. ID of device submitting update
         """
         return self.api_client.submit_model_update(group_id, round_id, device_id)
+
+    def auto_submit_model_update(self, model_json, group_id, round_id, device_id):
+        """
+        Submit device model update. This will both grab the link for submission, as well as
+        upload the model to the cloud. Note: Because this must upload a file to the internet,
+        it may take a significant amount of time to execute.
+
+        :param model_json: string. Should conform to the model json data standard, must be serializable
+        :param group_id: string. ID of group
+        :param round_id: string. ID of learning round
+        :param device_id: string. ID of device submitting update
+        """
+        if model_json is None:
+            raise FedLearnApiException("model_json must not be none")
+
+        return self.api_client.auto_submit_model_update(model_json, group_id, round_id, device_id)
 
     def submit_initial_group_model(self, group_id):
         """

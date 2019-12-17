@@ -7,6 +7,8 @@ from .models import Group
 from .models import LearningRound
 from .models import Device
 
+from .utils import upload_data_to_s3_helper
+
 class ApiClient:
 
     def __init__(self, api_key):
@@ -42,6 +44,21 @@ class ApiClient:
         self._validate_response(response)
 
         return response.json()
+
+    def auto_submit_model_update(self, model_json, group_id, round_id, device_id):
+        """
+        :param model_json: json
+        :param group_id: string
+        :param round_id: string
+        :param device_id: string
+        """
+        upload_link_info = self.submit_model_update(group_id, round_id, device_id)
+
+        response = upload_data_to_s3_helper(model_json, upload_link_info)
+
+        self._validate_response(response)
+
+        return True
 
     def submit_initial_group_model(self, group_id):
         """
@@ -122,7 +139,7 @@ class ApiClient:
         return requests.get(url, json=json)
 
     def _validate_response(self, response):
-        if response.status_code == 200:
+        if response.status_code == 200 or response.status_code == 204:
             return
         elif response.status_code == 400:
             raise FedLearnApiException(response.text)
