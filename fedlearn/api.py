@@ -16,12 +16,21 @@ class FedLearnApi:
         """
         return self.api_client.create_group(group_name)
 
+    def register_device(self, group_id):
+        """
+        Register a new device with a Federated Learning group.
+
+        :param group_id: string. ID of group to register new device with
+        :return: A Device
+        """
+        return self.api_client.register_device(group_id)
+
     def delete_group(self, group_id):
         """
         Delete a Federated Learning group.
 
         :param group_id: string. ID of the group to remove
-        :returns: Success/Failure Boolean
+        :return: Success/Failure Boolean
         """
         return self.api_client.delete_group(group_id)
 

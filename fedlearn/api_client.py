@@ -5,6 +5,7 @@ from .exceptions import FedLearnException
 
 from .models import Group
 from .models import LearningRound
+from .models import Device
 
 class ApiClient:
 
@@ -13,6 +14,20 @@ class ApiClient:
         :param api_key: string
         """
         self.api_key = api_key
+
+    def register_device(self, group_id):
+        """
+        :param group_id: string
+        """
+        data = {"group_id" : group_id}
+        response = self._post(FedLearnConfig.REGISTER_DEVICE_PATH, data)
+
+        self._validate_response(response)
+
+        device_id = response.json()["device_id"]
+        device_api_key = response.json()["device_api_key"]
+
+        return Device(device_id, device_api_key)
 
     def create_group(self, group_name):
         """
