@@ -43,6 +43,18 @@ class FedLearnApi:
         """
         return self.api_client.submit_initial_group_model(group_id)
 
+    def auto_submit_initial_group_model(self, model_json, group_id):
+        """
+        Submit the initial model for a Federated Learning group.
+
+        :param model_json: string. Should conform to the model json data standard, must be serializable
+        :param group_id: string. ID of group
+        """
+        if model_json is None:
+            raise FedLearnApiException("model_json must not be none")
+
+        return self.api_client.auto_submit_initial_group_model(model_json, group_id)
+
     def create_group(self, group_name):
         """
         Create a Federated Learning group.

@@ -72,6 +72,19 @@ class ApiClient:
 
         return response.json()
 
+    def auto_submit_initial_group_model(self, model_json, group_id):
+        """
+        :param model_json: json
+        :param group_id: string
+        """
+        upload_link_info = self.submit_initial_group_model(group_id)
+
+        response = upload_data_to_s3_helper(model_json, upload_link_info)
+
+        self._validate_response(response)
+
+        return True
+
     def get_round_status(self, group_id, round_id):
         """
         :param group_id: string
