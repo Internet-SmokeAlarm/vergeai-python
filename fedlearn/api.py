@@ -9,18 +9,18 @@ class FedLearnApi:
 
         self.api_client = ApiClient(api_key)
 
-    def submit_model_update(self, group_id, round_id, device_id):
+    def get_model_update_submit_link(self, group_id, round_id, device_id):
         """
-        Submit device model update.
+        Get the link to submit a device model update.
 
         :param group_id: string. ID of group
         :param round_id: string. ID of learning round
         :param device_id: string. ID of device submitting update
         :return: URL JSON
         """
-        return self.api_client.submit_model_update(group_id, round_id, device_id)
+        return self.api_client.get_model_update_submit_link(group_id, round_id, device_id)
 
-    def auto_submit_model_update(self, model_json, group_id, round_id, device_id):
+    def submit_model_update(self, model_json, group_id, round_id, device_id):
         """
         Submit device model update. This will both grab the link for submission, as well as
         upload the model to the cloud. Note: Because this must upload a file to the internet,
@@ -37,18 +37,18 @@ class FedLearnApi:
         elif type(model_json) is not type({}):
             raise FedLearnApiException("model_json must be of type dict")
 
-        return self.api_client.auto_submit_model_update(model_json, group_id, round_id, device_id)
+        return self.api_client.submit_model_update(model_json, group_id, round_id, device_id)
 
-    def submit_initial_group_model(self, group_id):
+    def get_initial_group_model_submit_link(self, group_id):
         """
-        Submit the initial model for a Federated Learning group.
+        Get the link information to submit the initial model for a Federated Learning group.
 
         :param group_id: string. ID of group
         :return: URL JSON
         """
-        return self.api_client.submit_initial_group_model(group_id)
+        return self.api_client.get_initial_group_model_submit_link(group_id)
 
-    def auto_submit_initial_group_model(self, model_json, group_id):
+    def submit_initial_group_model(self, model_json, group_id):
         """
         Submit the initial model for a Federated Learning group.
 
@@ -61,25 +61,25 @@ class FedLearnApi:
         elif type(model_json) is not type({}):
             raise FedLearnApiException("model_json must be of type dict")
 
-        return self.api_client.auto_submit_initial_group_model(model_json, group_id)
+        return self.api_client.submit_initial_group_model(model_json, group_id)
 
-    def get_initial_group_model(self, group_id):
+    def get_initial_group_model_download_link(self, group_id):
         """
         Get the download link for the initial group model.
 
         :param group_id: string. ID of group
         :return: URL JSON
         """
-        return self.api_client.get_initial_group_model(group_id)
+        return self.api_client.get_initial_group_model_download_link(group_id)
 
-    def auto_get_initial_group_model(self, group_id):
+    def get_initial_group_model(self, group_id):
         """
         Run the get_initial_group_model() function, then download the initial model.
 
         :param group_id: string. ID of group
         :return: json
         """
-        return self.api_client.auto_get_initial_group_model(group_id)
+        return self.api_client.get_initial_group_model(group_id)
 
     def create_group(self, group_name):
         """

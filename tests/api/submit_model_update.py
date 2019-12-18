@@ -1,4 +1,5 @@
 import unittest
+import json
 
 from fedlearn import FedLearnApi
 
@@ -12,16 +13,16 @@ class SubmitModelUpdateTestCase(unittest.TestCase):
         #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
         client = FedLearnApi("uh_idk_what_to_put_here_yet")
 
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+
         group = client.create_group("sim_test_group")
         learning_round = client.start_round(group.get_id())
         device = client.register_device(group.get_id())
 
-        response = client.submit_model_update(group.get_id(), learning_round.get_id(), device.get_id())
+        success = client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
 
-        self.assertTrue("model_url" in response)
-        self.assertTrue(group.get_id() in response["model_url"]["fields"]["key"])
-        self.assertTrue(learning_round.get_id() in response["model_url"]["fields"]["key"])
-        self.assertTrue(device.get_id() in response["model_url"]["fields"]["key"])
+        self.assertTrue(success)
 
         client.delete_group(group.get_id())
 
@@ -31,9 +32,10 @@ class SubmitModelUpdateTestCase(unittest.TestCase):
         client = FedLearnApi("uh_idk_what_to_put_here_yet")
 
         group = client.create_group("sim_test_group")
+        learning_round = client.start_round(group.get_id())
         device = client.register_device(group.get_id())
 
-        self.assertRaises(FedLearnApiException, client.submit_model_update, group.get_id(), None, device.get_id())
+        self.assertRaises(FedLearnApiException, client.submit_model_update, None, group.get_id(), learning_round.get_id(), device.get_id())
 
         client.delete_group(group.get_id())
 
@@ -42,10 +44,13 @@ class SubmitModelUpdateTestCase(unittest.TestCase):
         #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
         client = FedLearnApi("uh_idk_what_to_put_here_yet")
 
-        group = client.create_group("sim_test_group")
-        learning_round = client.start_round(group.get_id())
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
 
-        self.assertRaises(FedLearnApiException, client.submit_model_update, group.get_id(), learning_round.get_id(), None)
+        group = client.create_group("sim_test_group")
+        device = client.register_device(group.get_id())
+
+        self.assertRaises(FedLearnApiException, client.submit_model_update, model_data, group.get_id(), None, device.get_id())
 
         client.delete_group(group.get_id())
 
@@ -54,10 +59,41 @@ class SubmitModelUpdateTestCase(unittest.TestCase):
         #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
         client = FedLearnApi("uh_idk_what_to_put_here_yet")
 
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+
+        group = client.create_group("sim_test_group")
+        learning_round = client.start_round(group.get_id())
+
+        self.assertRaises(FedLearnApiException, client.submit_model_update, model_data, group.get_id(), learning_round.get_id(), None)
+
+        client.delete_group(group.get_id())
+
+    def test_submit_model_update_fail_4(self):
+        # TODO : Add test key below
+        #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
+        client = FedLearnApi("uh_idk_what_to_put_here_yet")
+
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+
         group = client.create_group("sim_test_group")
         learning_round = client.start_round(group.get_id())
         device = client.register_device(group.get_id())
 
-        self.assertRaises(FedLearnApiException, client.submit_model_update, None, learning_round.get_id(), device.get_id())
+        self.assertRaises(FedLearnApiException, client.submit_model_update, model_data, None, learning_round.get_id(), device.get_id())
+
+        client.delete_group(group.get_id())
+
+    def test_submit_model_update_fail_5(self):
+        # TODO : Add test key below
+        #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
+        client = FedLearnApi("uh_idk_what_to_put_here_yet")
+
+        group = client.create_group("sim_test_group")
+        learning_round = client.start_round(group.get_id())
+        device = client.register_device(group.get_id())
+
+        self.assertRaises(FedLearnApiException, client.submit_model_update, "testingsdfsdf", group.get_id(), learning_round.get_id(), device.get_id())
 
         client.delete_group(group.get_id())

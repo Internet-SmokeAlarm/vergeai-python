@@ -32,7 +32,7 @@ class ApiClient:
 
         return Device(device_id, device_api_key)
 
-    def submit_model_update(self, group_id, round_id, device_id):
+    def get_model_update_submit_link(self, group_id, round_id, device_id):
         """
         :param group_id: string
         :param round_id: string
@@ -46,14 +46,14 @@ class ApiClient:
 
         return response.json()
 
-    def auto_submit_model_update(self, model_json, group_id, round_id, device_id):
+    def submit_model_update(self, model_json, group_id, round_id, device_id):
         """
         :param model_json: json
         :param group_id: string
         :param round_id: string
         :param device_id: string
         """
-        upload_link_info = self.submit_model_update(group_id, round_id, device_id)
+        upload_link_info = self.get_model_update_submit_link(group_id, round_id, device_id)
 
         response = upload_data_to_s3_helper(model_json, upload_link_info)
 
@@ -61,7 +61,7 @@ class ApiClient:
 
         return True
 
-    def submit_initial_group_model(self, group_id):
+    def get_initial_group_model_submit_link(self, group_id):
         """
         :param group_id: string
         :return: json. Dictionary that contains information necessary to submit model
@@ -73,12 +73,12 @@ class ApiClient:
 
         return response.json()
 
-    def auto_submit_initial_group_model(self, model_json, group_id):
+    def submit_initial_group_model(self, model_json, group_id):
         """
         :param model_json: json
         :param group_id: string
         """
-        upload_link_info = self.submit_initial_group_model(group_id)
+        upload_link_info = self.get_initial_group_model_submit_link(group_id)
 
         response = upload_data_to_s3_helper(model_json, upload_link_info)
 
@@ -86,7 +86,7 @@ class ApiClient:
 
         return True
 
-    def get_initial_group_model(self, group_id):
+    def get_initial_group_model_download_link(self, group_id):
         """
         :param group_id: string
         """
@@ -97,11 +97,11 @@ class ApiClient:
 
         return response.json()
 
-    def auto_get_initial_group_model(self, group_id):
+    def get_initial_group_model(self, group_id):
         """
         :param group_id: string
         """
-        url_info = self.get_initial_group_model(group_id)
+        url_info = self.get_initial_group_model_download_link(group_id)
 
         response = download_model_from_s3_helper(url_info)
 
