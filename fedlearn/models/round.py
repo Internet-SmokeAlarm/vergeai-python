@@ -1,4 +1,4 @@
-class LearningRound:
+class Round:
 
     def __init__(self, id, models):
         self.id = id

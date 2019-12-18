@@ -4,7 +4,7 @@ from .exceptions import FedLearnApiException
 from .exceptions import FedLearnException
 
 from .models import Group
-from .models import LearningRound
+from .models import Round
 from .models import Device
 
 from .utils import upload_data_to_s3_helper
@@ -85,6 +85,17 @@ class ApiClient:
 
         return True
 
+    def get_initial_group_model(self, group_id):
+        """
+        :param group_id: string
+        """
+        data = {"group_id" : group_id}
+        response = self._get(FedLearnConfig.GET_INITIAL_GROUP_MODEL_PATH, data)
+
+        self._validate_response(response)
+
+        return response.json()
+
     def get_round_state(self, group_id, round_id):
         """
         :param group_id: string
@@ -99,7 +110,7 @@ class ApiClient:
         id = response.json()["round"]["id"]
         models = response.json()["round"]["models"]
 
-        return LearningRound(id, models)
+        return Round(id, models)
 
     def create_group(self, group_name):
         """
@@ -128,14 +139,14 @@ class ApiClient:
     def start_round(self, group_id):
         """
         :param group_id: string
-        :return: LearningRound
+        :return: Round
         """
         data = {"group_id" : group_id}
         response = self._post(FedLearnConfig.START_ROUND_PATH, data)
 
         self._validate_response(response)
 
-        return LearningRound(response.json()["round_id"], [])
+        return Round(response.json()["round_id"], [])
 
     def _post(self, url, json):
         """

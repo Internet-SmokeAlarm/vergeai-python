@@ -1,3 +1,3 @@
 from .group import Group
-from .learning_round import LearningRound
+from .round import Round
 from .device import Device

@@ -16,6 +16,7 @@ class FedLearnApi:
         :param group_id: string. ID of group
         :param round_id: string. ID of learning round
         :param device_id: string. ID of device submitting update
+        :return: URL JSON
         """
         return self.api_client.submit_model_update(group_id, round_id, device_id)
 
@@ -29,6 +30,7 @@ class FedLearnApi:
         :param group_id: string. ID of group
         :param round_id: string. ID of learning round
         :param device_id: string. ID of device submitting update
+        :return: boolean. True if successful
         """
         if model_json is None:
             raise FedLearnApiException("model_json must not be none")
@@ -40,6 +42,7 @@ class FedLearnApi:
         Submit the initial model for a Federated Learning group.
 
         :param group_id: string. ID of group
+        :return: URL JSON
         """
         return self.api_client.submit_initial_group_model(group_id)
 
@@ -49,11 +52,21 @@ class FedLearnApi:
 
         :param model_json: string. Should conform to the model json data standard, must be serializable
         :param group_id: string. ID of group
+        :return: boolean. True if successful
         """
         if model_json is None:
             raise FedLearnApiException("model_json must not be none")
 
         return self.api_client.auto_submit_initial_group_model(model_json, group_id)
+
+    def get_initial_group_model(self, group_id):
+        """
+        Get the download link for the initial group model.
+
+        :param group_id: string. ID of group
+        :return: URL JSON
+        """
+        return self.api_client.get_initial_group_model(group_id)
 
     def create_group(self, group_name):
         """
@@ -69,7 +82,8 @@ class FedLearnApi:
         Gets the information associated with a learning round.
 
         :param group_id: string. Group ID
-        :param round_id: string. Learning round ID
+        :param round_id: string. Round ID
+        :return: A Round
         """
         return self.api_client.get_round_state(group_id, round_id)
 
@@ -96,6 +110,6 @@ class FedLearnApi:
         Start a new learning round.
 
         :param group_id: string. Group ID
-        :returns: A LearningRound
+        :returns: A Round
         """
         return self.api_client.start_round(group_id)
