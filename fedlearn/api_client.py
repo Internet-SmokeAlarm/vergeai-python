@@ -85,19 +85,19 @@ class ApiClient:
 
         return True
 
-    def get_round_status(self, group_id, round_id):
+    def get_round_state(self, group_id, round_id):
         """
         :param group_id: string
         :param round_id: string
         """
         data = {"group_id" : group_id, "round_id" : round_id}
 
-        response = self._get(FedLearnConfig.GET_ROUND_STATUS_PATH, data)
+        response = self._get(FedLearnConfig.GET_ROUND_STATE_PATH, data)
 
         self._validate_response(response)
 
-        id = response.json()["learning_round"]["id"]
-        models = response.json()["learning_round"]["models"]
+        id = response.json()["round"]["id"]
+        models = response.json()["round"]["models"]
 
         return LearningRound(id, models)
 
