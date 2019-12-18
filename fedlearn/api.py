@@ -26,7 +26,7 @@ class FedLearnApi:
         upload the model to the cloud. Note: Because this must upload a file to the internet,
         it may take a significant amount of time to execute.
 
-        :param model_json: string. Should conform to the model json data standard, must be serializable
+        :param model_json: json. Should conform to the model json data standard, must be serializable
         :param group_id: string. ID of group
         :param round_id: string. ID of learning round
         :param device_id: string. ID of device submitting update
@@ -34,6 +34,8 @@ class FedLearnApi:
         """
         if model_json is None:
             raise FedLearnApiException("model_json must not be none")
+        elif type(model_json) is not type({}):
+            raise FedLearnApiException("model_json must be of type dict")
 
         return self.api_client.auto_submit_model_update(model_json, group_id, round_id, device_id)
 
@@ -50,12 +52,14 @@ class FedLearnApi:
         """
         Submit the initial model for a Federated Learning group.
 
-        :param model_json: string. Should conform to the model json data standard, must be serializable
+        :param model_json: json. Should conform to the model json data standard, must be serializable
         :param group_id: string. ID of group
         :return: boolean. True if successful
         """
         if model_json is None:
             raise FedLearnApiException("model_json must not be none")
+        elif type(model_json) is not type({}):
+            raise FedLearnApiException("model_json must be of type dict")
 
         return self.api_client.auto_submit_initial_group_model(model_json, group_id)
 
@@ -67,6 +71,15 @@ class FedLearnApi:
         :return: URL JSON
         """
         return self.api_client.get_initial_group_model(group_id)
+
+    def auto_get_initial_group_model(self, group_id):
+        """
+        Run the get_initial_group_model() function, then download the initial model.
+
+        :param group_id: string. ID of group
+        :return: json
+        """
+        return self.api_client.auto_get_initial_group_model(group_id)
 
     def create_group(self, group_name):
         """

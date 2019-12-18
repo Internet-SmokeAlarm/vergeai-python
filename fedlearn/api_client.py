@@ -8,6 +8,7 @@ from .models import Round
 from .models import Device
 
 from .utils import upload_data_to_s3_helper
+from .utils import download_model_from_s3_helper
 
 class ApiClient:
 
@@ -91,6 +92,18 @@ class ApiClient:
         """
         data = {"group_id" : group_id}
         response = self._get(FedLearnConfig.GET_INITIAL_GROUP_MODEL_PATH, data)
+
+        self._validate_response(response)
+
+        return response.json()
+
+    def auto_get_initial_group_model(self, group_id):
+        """
+        :param group_id: string
+        """
+        url_info = self.get_initial_group_model(group_id)
+
+        response = download_model_from_s3_helper(url_info)
 
         self._validate_response(response)
 

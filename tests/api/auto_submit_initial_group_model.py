@@ -35,6 +35,17 @@ class AutoSubmitInitialGroupModelTestCase(unittest.TestCase):
 
         client.delete_group(group.get_id())
 
+    def test_auto_submit_initial_group_model_fail_3(self):
+        # TODO : Add test key below
+        #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
+        client = FedLearnApi("uh_idk_what_to_put_here_yet")
+
+        group = client.create_group("sim_test_group")
+
+        self.assertRaises(FedLearnApiException, client.auto_submit_initial_group_model, "testing", group.get_id())
+
+        client.delete_group(group.get_id())
+
     def test_auto_submit_initial_group_model_fail_2(self):
         # TODO : Add test key below
         #   NOTE: Test key should only work on a SANDBOX implementation in the cloud

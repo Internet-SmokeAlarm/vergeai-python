@@ -8,3 +8,4 @@ from .auto_submit_initial_group_model import AutoSubmitInitialGroupModelTestCase
 from .create_group import CreateGroupTestCase
 from .delete_group import DeleteGroupTestCase
 from .get_initial_group_model import GetInitialGroupModelTestCase
+from .auto_get_initial_group_model import AutoGetInitialGroupModelTestCase
