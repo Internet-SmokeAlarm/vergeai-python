@@ -120,7 +120,7 @@ class ApiClient:
 
         self._validate_response(response)
 
-        id = response.json()["round"]["id"]
+        id = response.json()["round"]["ID"]
         models = response.json()["round"]["models"]
 
         return Round(id, models)
