@@ -1,5 +1,5 @@
+from .models import RoundConfiguration
 from .api_client import ApiClient
-
 from .exceptions import FedLearnApiException
 
 class FedLearnApi:
@@ -138,16 +138,18 @@ class FedLearnApi:
 
         return self.api_client.delete_group(group_id)
 
-    def start_round(self, group_id):
+    def start_round(self, group_id, round_configuration):
         """
-        Start a new learning round.
+        Start a new learning round. Requires round settings to be passed.
 
         :param group_id: string. Group ID
+        :param round_configuration: RoundConfiguration
         :returns: A Round
         """
         self._validate_group_id(group_id)
+        self._validate_round_configuration(round_configuration)
 
-        return self.api_client.start_round(group_id)
+        return self.api_client.start_round(group_id, round_configuration)
 
     def is_device_active(self, group_id, device_id):
         """
@@ -194,6 +196,16 @@ class FedLearnApi:
         """
         if parameter is None or type(parameter) is not type("str"):
             raise FedLearnApiException("{} must not be none, and be type string".format(parameter_name))
+
+    def _validate_round_configuration(self, round_configuration):
+        """
+        :param round_configuration: RoundConfiguration
+        """
+        if round_configuration is None or type(round_configuration) is not RoundConfiguration:
+            raise FedLearnApiException("round configuration must be type RoundConfiguration")
+        else:
+            self._validate_string_parameter(round_configuration.get_num_devices(), "num devices")
+            self._validate_string_parameter(round_configuration.get_device_selection_strategy(), "device selection strategy")
 
     def _validate_model_json(self, model_json):
         """

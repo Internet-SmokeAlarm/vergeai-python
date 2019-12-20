@@ -1,6 +1,7 @@
 import unittest
 import json
 
+from fedlearn.models import RoundConfiguration
 from fedlearn import FedLearnApi
 
 class IT_SubmitModelUpdateTestCase(unittest.TestCase):
@@ -14,8 +15,8 @@ class IT_SubmitModelUpdateTestCase(unittest.TestCase):
             model_data = json.load(f)
 
         group = client.create_group("sim_test_group")
-        learning_round = client.start_round(group.get_id())
         device = client.register_device(group.get_id())
+        learning_round = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
 
         success = client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
 

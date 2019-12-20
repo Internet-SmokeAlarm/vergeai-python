@@ -1,5 +1,6 @@
 import unittest
 
+from fedlearn.models import RoundConfiguration
 from fedlearn import FedLearnApi
 from fedlearn.exceptions import FedLearnApiException
 
@@ -124,3 +125,28 @@ class UT_FedLearnApiTestCase(unittest.TestCase):
         client = FedLearnApi("doesnt_matter")
 
         self.assertRaises(FedLearnApiException, client._validate_model_json, "1231231")
+
+    def test_validate_round_configuration_pass(self):
+        client = FedLearnApi("doesnt_matter")
+
+        client._validate_round_configuration(RoundConfiguration("50", "RANDOM"))
+
+    def test_validate_round_configuration_fail(self):
+        client = FedLearnApi("doesnt_matter")
+
+        self.assertRaises(FedLearnApiException, client._validate_round_configuration, RoundConfiguration(None, "RANDOM"))
+
+    def test_validate_round_configuration_fail_2(self):
+        client = FedLearnApi("doesnt_matter")
+
+        self.assertRaises(FedLearnApiException, client._validate_round_configuration, RoundConfiguration(12131, "RANDOM"))
+
+    def test_validate_round_configuration_fail_3(self):
+        client = FedLearnApi("doesnt_matter")
+
+        self.assertRaises(FedLearnApiException, client._validate_round_configuration, RoundConfiguration("50", None))
+
+    def test_validate_round_configuration_fail_4(self):
+        client = FedLearnApi("doesnt_matter")
+
+        self.assertRaises(FedLearnApiException, client._validate_round_configuration, RoundConfiguration("50", {}))

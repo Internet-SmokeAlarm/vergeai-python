@@ -1,5 +1,6 @@
 import unittest
 
+from fedlearn.models import RoundConfiguration
 from fedlearn import FedLearnApi
 
 class IT_GetModelUpdateSubmitLinkTestCase(unittest.TestCase):
@@ -10,8 +11,8 @@ class IT_GetModelUpdateSubmitLinkTestCase(unittest.TestCase):
         client = FedLearnApi("uh_idk_what_to_put_here_yet")
 
         group = client.create_group("sim_test_group")
-        learning_round = client.start_round(group.get_id())
         device = client.register_device(group.get_id())
+        learning_round = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
 
         response = client.get_model_update_submit_link(group.get_id(), learning_round.get_id(), device.get_id())
 

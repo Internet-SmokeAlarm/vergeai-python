@@ -1,5 +1,6 @@
 import unittest
 
+from fedlearn.models import RoundConfiguration
 from fedlearn.models import RoundStatus
 from fedlearn import FedLearnApi
 from fedlearn.exceptions import FedLearnApiException
@@ -12,7 +13,7 @@ class IT_GetRoundStateTestCase(unittest.TestCase):
         client = FedLearnApi("uh_idk_what_to_put_here_yet")
         group = client.create_group("sim_test_group")
 
-        learning_round = client.start_round(group.get_id())
+        learning_round = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
 
         response_learning_round = client.get_round_state(group.get_id(), learning_round.get_id())
 
@@ -28,7 +29,7 @@ class IT_GetRoundStateTestCase(unittest.TestCase):
         client = FedLearnApi("uh_idk_what_to_put_here_yet")
         group = client.create_group("sim_test_group")
 
-        learning_round = client.start_round(group.get_id())
+        learning_round = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
         self.assertRaises(FedLearnApiException, client.get_round_state, group.get_id(), "i_dont_exist_woo_hoo")
 
         client.delete_group(group.get_id())

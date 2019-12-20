@@ -154,17 +154,22 @@ class ApiClient:
 
         return response.json()["success"]
 
-    def start_round(self, group_id):
+    def start_round(self, group_id, round_configuration):
         """
         :param group_id: string
+        :param round_configuration: RoundConfiguration
         :return: Round
         """
-        data = {"group_id" : group_id}
+        data = {
+            "group_id" : group_id,
+            "num_devices" : round_configuration.get_num_devices(),
+            "device_selection_strategy" : round_configuration.get_device_selection_strategy()
+        }
         response = self._post(FedLearnConfig.START_ROUND_PATH, data)
 
         self._validate_response(response)
 
-        return Round(response.json()["round_id"], [])
+        return Round(response.json()["round_id"], RoundStatus.IN_PROGRESS)
 
     def is_device_active(self, group_id, device_id):
         """
