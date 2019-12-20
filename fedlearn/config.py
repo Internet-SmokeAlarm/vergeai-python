@@ -14,3 +14,4 @@ class FedLearnConfig:
 
     REGISTER_DEVICE_PATH = PROD_ENDPOINT + "api/v1/device/register"
     SUBMIT_MODEL_UPDATE_PATH = PROD_ENDPOINT + "api/v1/submit_model_update"
+    IS_DEVICE_ACTIVE_PATH = PROD_ENDPOINT + "api/v1/device/get/active"

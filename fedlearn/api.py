@@ -5,8 +5,6 @@ from .exceptions import FedLearnApiException
 class FedLearnApi:
 
     def __init__(self, api_key):
-        self.api_key = api_key
-
         self.api_client = ApiClient(api_key)
 
     def get_model_update_submit_link(self, group_id, round_id, device_id):
@@ -18,6 +16,10 @@ class FedLearnApi:
         :param device_id: string. ID of device submitting update
         :return: URL JSON
         """
+        self._validate_group_id(group_id)
+        self._validate_round_id(round_id)
+        self._validate_device_id(device_id)
+
         return self.api_client.get_model_update_submit_link(group_id, round_id, device_id)
 
     def submit_model_update(self, model_json, group_id, round_id, device_id):
@@ -32,10 +34,10 @@ class FedLearnApi:
         :param device_id: string. ID of device submitting update
         :return: boolean. True if successful
         """
-        if model_json is None:
-            raise FedLearnApiException("model_json must not be none")
-        elif type(model_json) is not type({}):
-            raise FedLearnApiException("model_json must be of type dict")
+        self._validate_model_json(model_json)
+        self._validate_group_id(group_id)
+        self._validate_round_id(round_id)
+        self._validate_device_id(device_id)
 
         return self.api_client.submit_model_update(model_json, group_id, round_id, device_id)
 
@@ -46,6 +48,8 @@ class FedLearnApi:
         :param group_id: string. ID of group
         :return: URL JSON
         """
+        self._validate_group_id(group_id)
+
         return self.api_client.get_initial_group_model_submit_link(group_id)
 
     def submit_initial_group_model(self, model_json, group_id):
@@ -56,6 +60,9 @@ class FedLearnApi:
         :param group_id: string. ID of group
         :return: boolean. True if successful
         """
+        self._validate_model_json(model_json)
+        self._validate_group_id(group_id)
+
         if model_json is None:
             raise FedLearnApiException("model_json must not be none")
         elif type(model_json) is not type({}):
@@ -70,6 +77,8 @@ class FedLearnApi:
         :param group_id: string. ID of group
         :return: URL JSON
         """
+        self._validate_group_id(group_id)
+
         return self.api_client.get_initial_group_model_download_link(group_id)
 
     def get_initial_group_model(self, group_id):
@@ -79,6 +88,8 @@ class FedLearnApi:
         :param group_id: string. ID of group
         :return: json
         """
+        self._validate_group_id(group_id)
+
         return self.api_client.get_initial_group_model(group_id)
 
     def create_group(self, group_name):
@@ -88,6 +99,8 @@ class FedLearnApi:
         :param group_name: string. Will be the name of the group
         :returns: A Group
         """
+        self._validate_group_name(group_name)
+
         return self.api_client.create_group(group_name)
 
     def get_round_state(self, group_id, round_id):
@@ -98,6 +111,9 @@ class FedLearnApi:
         :param round_id: string. Round ID
         :return: A Round
         """
+        self._validate_group_id(group_id)
+        self._validate_round_id(round_id)
+
         return self.api_client.get_round_state(group_id, round_id)
 
     def register_device(self, group_id):
@@ -107,6 +123,8 @@ class FedLearnApi:
         :param group_id: string. ID of group to register new device with
         :return: A Device
         """
+        self._validate_group_id(group_id)
+
         return self.api_client.register_device(group_id)
 
     def delete_group(self, group_id):
@@ -116,6 +134,8 @@ class FedLearnApi:
         :param group_id: string. ID of the group to remove
         :return: Success/Failure Boolean
         """
+        self._validate_group_id(group_id)
+
         return self.api_client.delete_group(group_id)
 
     def start_round(self, group_id):
@@ -125,4 +145,61 @@ class FedLearnApi:
         :param group_id: string. Group ID
         :returns: A Round
         """
+        self._validate_group_id(group_id)
+
         return self.api_client.start_round(group_id)
+
+    def is_device_active(self, group_id, device_id):
+        """
+        Check whether a device is currently active. If a device is active, this means
+        that it is a part of a round that is active.
+
+        :param group_id: string
+        :param device_id: string
+        :return: boolean. True if the device is active
+        """
+        self._validate_group_id(group_id)
+        self._validate_device_id(device_id)
+
+        return self.api_client.is_device_active(group_id, device_id)
+
+    def _validate_round_id(self, round_id):
+        """
+        :param round_id: string
+        """
+        self._validate_string_parameter(round_id, "round_id")
+
+    def _validate_group_id(self, group_id):
+        """
+        :param group_id: string
+        """
+        self._validate_string_parameter(group_id, "group_id")
+
+    def _validate_group_name(self, group_name):
+        """
+        :param group_name: string
+        """
+        self._validate_string_parameter(group_name, "group_name")
+
+    def _validate_device_id(self, device_id):
+        """
+        :param device_id: string
+        """
+        self._validate_string_parameter(device_id, "device_id")
+
+    def _validate_string_parameter(self, parameter, parameter_name):
+        """
+        :param parameter: string
+        :param parameter_name: string
+        """
+        if parameter is None or type(parameter) is not type("str"):
+            raise FedLearnApiException("{} must not be none, and be type string".format(parameter_name))
+
+    def _validate_model_json(self, model_json):
+        """
+        :param model_json: dict
+        """
+        if model_json is None:
+            raise FedLearnApiException("model_json must not be none")
+        elif type(model_json) is not type({}):
+            raise FedLearnApiException("model_json must be of type dict")

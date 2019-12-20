@@ -6,11 +6,16 @@ from .exceptions import FedLearnException
 from .models import Group
 from .models import Round
 from .models import Device
+from .models import RoundStatus
 
 from .utils import upload_data_to_s3_helper
 from .utils import download_model_from_s3_helper
 
 class ApiClient:
+    """
+    Will NOT validate parameter data. Please use the FedLearnApi class
+    to access the Federated Learning system.
+    """
 
     def __init__(self, api_key):
         """
@@ -120,10 +125,10 @@ class ApiClient:
 
         self._validate_response(response)
 
-        id = response.json()["round"]["ID"]
-        models = response.json()["round"]["models"]
+        id = response.json()["ID"]
+        status = RoundStatus(response.json()["status"])
 
-        return Round(id, models)
+        return Round(id, status)
 
     def create_group(self, group_name):
         """
@@ -160,6 +165,19 @@ class ApiClient:
         self._validate_response(response)
 
         return Round(response.json()["round_id"], [])
+
+    def is_device_active(self, group_id, device_id):
+        """
+        :param group_id: string
+        :param device_id: string
+        :return: boolean
+        """
+        data = {"group_id" : group_id, "device_id" : device_id}
+        response = self._get(FedLearnConfig.IS_DEVICE_ACTIVE_PATH, data)
+
+        self._validate_response(response)
+
+        return response.json()["is_device_active"]
 
     def _post(self, url, json):
         """

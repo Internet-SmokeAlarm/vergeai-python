@@ -3,24 +3,23 @@ import unittest
 from fedlearn import FedLearnApi
 from fedlearn.exceptions import FedLearnApiException
 
-class GetInitialGroupModelDownloadLinkTestCase(unittest.TestCase):
+class IT_StartRoundTestCase(unittest.TestCase):
 
-    def test_get_initial_group_model_download_link_pass(self):
+    def test_pass(self):
         # TODO : Add test key below
         #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
         client = FedLearnApi("uh_idk_what_to_put_here_yet")
         group = client.create_group("sim_test_group")
 
-        url_json = client.get_initial_group_model_download_link(group.get_id())
+        learning_round = client.start_round(group.get_id())
 
-        self.assertIsNotNone(url_json)
-        self.assertTrue(group.get_id() in url_json["model_url"])
+        self.assertIsNotNone(learning_round.get_id())
 
         client.delete_group(group.get_id())
 
-    def test_get_initial_group_model_download_link_fail(self):
+    def test_fail_nonexistant_group(self):
         # TODO : Add test key below
         #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
         client = FedLearnApi("uh_idk_what_to_put_here_yet")
 
-        self.assertRaises(FedLearnApiException, client.get_initial_group_model_download_link, None)
+        self.assertRaises(FedLearnApiException, client.start_round, "i_dont_exist_woo_hoo")
