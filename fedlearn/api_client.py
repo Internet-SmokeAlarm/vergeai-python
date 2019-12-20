@@ -201,7 +201,7 @@ class ApiClient:
     def _validate_response(self, response):
         if response.status_code == 200 or response.status_code == 204:
             return
-        elif response.status_code == 400:
+        elif response.status_code == 400 or response.status_code == 403:
             raise FedLearnApiException(response.text)
         else:
             raise FedLearnException(response.text)
