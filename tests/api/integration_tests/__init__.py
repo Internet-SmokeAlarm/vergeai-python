@@ -1,4 +1,4 @@
-#from .is_device_active import IT_IsDeviceActiveTestCase
+from .is_device_active import IT_IsDeviceActiveTestCase
 from .start_round import IT_StartRoundTestCase
 from .get_round_state import IT_GetRoundStateTestCase
 from .register_device import IT_RegisterDeviceTestCase
