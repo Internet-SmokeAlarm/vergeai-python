@@ -4,12 +4,18 @@ from .exceptions import FedLearnApiException
 from .exceptions import FedLearnException
 
 from .models import Group
-from .models import LearningRound
+from .models import Round
 from .models import Device
+from .models import RoundStatus
 
 from .utils import upload_data_to_s3_helper
+from .utils import download_model_from_s3_helper
 
 class ApiClient:
+    """
+    Will NOT validate parameter data. Please use the FedLearnApi class
+    to access the Federated Learning system.
+    """
 
     def __init__(self, api_key):
         """
@@ -31,7 +37,7 @@ class ApiClient:
 
         return Device(device_id, device_api_key)
 
-    def submit_model_update(self, group_id, round_id, device_id):
+    def get_model_update_submit_link(self, group_id, round_id, device_id):
         """
         :param group_id: string
         :param round_id: string
@@ -45,14 +51,14 @@ class ApiClient:
 
         return response.json()
 
-    def auto_submit_model_update(self, model_json, group_id, round_id, device_id):
+    def submit_model_update(self, model_json, group_id, round_id, device_id):
         """
         :param model_json: json
         :param group_id: string
         :param round_id: string
         :param device_id: string
         """
-        upload_link_info = self.submit_model_update(group_id, round_id, device_id)
+        upload_link_info = self.get_model_update_submit_link(group_id, round_id, device_id)
 
         response = upload_data_to_s3_helper(model_json, upload_link_info)
 
@@ -60,7 +66,7 @@ class ApiClient:
 
         return True
 
-    def submit_initial_group_model(self, group_id):
+    def get_initial_group_model_submit_link(self, group_id):
         """
         :param group_id: string
         :return: json. Dictionary that contains information necessary to submit model
@@ -72,12 +78,12 @@ class ApiClient:
 
         return response.json()
 
-    def auto_submit_initial_group_model(self, model_json, group_id):
+    def submit_initial_group_model(self, model_json, group_id):
         """
         :param model_json: json
         :param group_id: string
         """
-        upload_link_info = self.submit_initial_group_model(group_id)
+        upload_link_info = self.get_initial_group_model_submit_link(group_id)
 
         response = upload_data_to_s3_helper(model_json, upload_link_info)
 
@@ -85,21 +91,43 @@ class ApiClient:
 
         return True
 
-    def get_round_status(self, group_id, round_id):
+    def get_initial_group_model_download_link(self, group_id):
+        """
+        :param group_id: string
+        """
+        data = {"group_id" : group_id}
+        response = self._post(FedLearnConfig.GET_INITIAL_GROUP_MODEL_PATH, data)
+
+        self._validate_response(response)
+
+        return response.json()
+
+    def get_initial_group_model(self, group_id):
+        """
+        :param group_id: string
+        """
+        url_info = self.get_initial_group_model_download_link(group_id)
+
+        response = download_model_from_s3_helper(url_info)
+
+        self._validate_response(response)
+
+        return response.json()
+
+    def get_round_state(self, group_id, round_id):
         """
         :param group_id: string
         :param round_id: string
         """
         data = {"group_id" : group_id, "round_id" : round_id}
-
-        response = self._get(FedLearnConfig.GET_ROUND_STATUS_PATH, data)
+        response = self._post(FedLearnConfig.GET_ROUND_STATE_PATH, data)
 
         self._validate_response(response)
 
-        id = response.json()["learning_round"]["id"]
-        models = response.json()["learning_round"]["models"]
+        id = response.json()["ID"]
+        status = RoundStatus(response.json()["status"])
 
-        return LearningRound(id, models)
+        return Round(id, status)
 
     def create_group(self, group_name):
         """
@@ -125,17 +153,66 @@ class ApiClient:
 
         return response.json()["success"]
 
-    def start_round(self, group_id):
+    def start_round(self, group_id, round_configuration):
         """
         :param group_id: string
-        :return: LearningRound
+        :param round_configuration: RoundConfiguration
+        :return: Round
         """
-        data = {"group_id" : group_id}
+        data = {
+            "group_id" : group_id,
+            "num_devices" : round_configuration.get_num_devices(),
+            "device_selection_strategy" : round_configuration.get_device_selection_strategy()
+        }
         response = self._post(FedLearnConfig.START_ROUND_PATH, data)
 
         self._validate_response(response)
 
-        return LearningRound(response.json()["round_id"], [])
+        return Round(response.json()["round_id"], RoundStatus.IN_PROGRESS)
+
+    def is_device_active(self, group_id, device_id):
+        """
+        :param group_id: string
+        :param device_id: string
+        :return: boolean
+        """
+        data = {"group_id" : group_id, "device_id" : device_id}
+        response = self._post(FedLearnConfig.IS_DEVICE_ACTIVE_PATH, data)
+
+        self._validate_response(response)
+
+        return response.json()["is_device_active"]
+
+    def get_round_aggregate_model_download_link(self, group_id, round_id):
+        """
+        Get the link to download the round aggregate model.
+
+        :param group_id: string
+        :param round_id: string
+        :return: dict. Model data
+        """
+        data = {"group_id" : group_id, "round_id" : round_id}
+        response = self._post(FedLearnConfig.GET_ROUND_AGGREGATE_MODEL_PATH, data)
+
+        self._validate_response(response)
+
+        return response.json()
+
+    def get_round_aggregate_model(self, group_id, round_id):
+        """
+        Get the link to download the round aggregate model, then download it.
+
+        :param group_id: string
+        :param round_id: string
+        :return: dict. Model data
+        """
+        url_info = self.get_round_aggregate_model_download_link(group_id, round_id)
+
+        response = download_model_from_s3_helper(url_info)
+
+        self._validate_response(response)
+
+        return response.json()
 
     def _post(self, url, json):
         """
@@ -154,7 +231,7 @@ class ApiClient:
     def _validate_response(self, response):
         if response.status_code == 200 or response.status_code == 204:
             return
-        elif response.status_code == 400:
+        elif response.status_code == 400 or response.status_code == 403:
             raise FedLearnApiException(response.text)
         else:
             raise FedLearnException(response.text)

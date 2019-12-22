@@ -1,3 +1,5 @@
 from .group import Group
-from .learning_round import LearningRound
+from .round_status import RoundStatus
+from .round import Round
 from .device import Device
+from .round_configuration import RoundConfiguration
