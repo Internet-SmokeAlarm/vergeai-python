@@ -96,7 +96,7 @@ class ApiClient:
         :param group_id: string
         """
         data = {"group_id" : group_id}
-        response = self._get(FedLearnConfig.GET_INITIAL_GROUP_MODEL_PATH, data)
+        response = self._post(FedLearnConfig.GET_INITIAL_GROUP_MODEL_PATH, data)
 
         self._validate_response(response)
 
@@ -120,8 +120,7 @@ class ApiClient:
         :param round_id: string
         """
         data = {"group_id" : group_id, "round_id" : round_id}
-
-        response = self._get(FedLearnConfig.GET_ROUND_STATE_PATH, data)
+        response = self._post(FedLearnConfig.GET_ROUND_STATE_PATH, data)
 
         self._validate_response(response)
 
@@ -178,11 +177,42 @@ class ApiClient:
         :return: boolean
         """
         data = {"group_id" : group_id, "device_id" : device_id}
-        response = self._get(FedLearnConfig.IS_DEVICE_ACTIVE_PATH, data)
+        response = self._post(FedLearnConfig.IS_DEVICE_ACTIVE_PATH, data)
 
         self._validate_response(response)
 
         return response.json()["is_device_active"]
+
+    def get_round_aggregate_model_download_link(self, group_id, round_id):
+        """
+        Get the link to download the round aggregate model.
+
+        :param group_id: string
+        :param round_id: string
+        :return: dict. Model data
+        """
+        data = {"group_id" : group_id, "round_id" : round_id}
+        response = self._post(FedLearnConfig.GET_ROUND_AGGREGATE_MODEL_PATH, data)
+
+        self._validate_response(response)
+
+        return response.json()
+
+    def get_round_aggregate_model(self, group_id, round_id):
+        """
+        Get the link to download the round aggregate model, then download it.
+
+        :param group_id: string
+        :param round_id: string
+        :return: dict. Model data
+        """
+        url_info = self.get_round_aggregate_model_download_link(group_id, round_id)
+
+        response = download_model_from_s3_helper(url_info)
+
+        self._validate_response(response)
+
+        return response.json()
 
     def _post(self, url, json):
         """

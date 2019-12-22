@@ -12,7 +12,7 @@ class IT_GetModelUpdateSubmitLinkTestCase(unittest.TestCase):
 
         group = client.create_group("sim_test_group")
         device = client.register_device(group.get_id())
-        learning_round = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
+        learning_round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
 
         response = client.get_model_update_submit_link(group.get_id(), learning_round.get_id(), device.get_id())
 

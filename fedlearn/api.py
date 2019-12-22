@@ -14,7 +14,7 @@ class FedLearnApi:
         :param group_id: string. ID of group
         :param round_id: string. ID of learning round
         :param device_id: string. ID of device submitting update
-        :return: URL JSON
+        :return: dict. URL data
         """
         self._validate_group_id(group_id)
         self._validate_round_id(round_id)
@@ -46,7 +46,7 @@ class FedLearnApi:
         Get the link information to submit the initial model for a Federated Learning group.
 
         :param group_id: string. ID of group
-        :return: URL JSON
+        :return: dict. URL data
         """
         self._validate_group_id(group_id)
 
@@ -75,7 +75,7 @@ class FedLearnApi:
         Get the download link for the initial group model.
 
         :param group_id: string. ID of group
-        :return: URL JSON
+        :return: dict. URL data
         """
         self._validate_group_id(group_id)
 
@@ -164,6 +164,32 @@ class FedLearnApi:
         self._validate_device_id(device_id)
 
         return self.api_client.is_device_active(group_id, device_id)
+
+    def get_round_aggregate_model_download_link(self, group_id, round_id):
+        """
+        Get the link to download the round aggregate model.
+
+        :param group_id: string
+        :param round_id: string
+        :return: dict. Model data
+        """
+        self._validate_group_id(group_id)
+        self._validate_round_id(round_id)
+
+        return self.api_client.get_round_aggregate_model_download_link(group_id, round_id)
+
+    def get_round_aggregate_model(self, group_id, round_id):
+        """
+        Get the link to download the round aggregate model, then download it.
+
+        :param group_id: string
+        :param round_id: string
+        :return: dict. Model data
+        """
+        self._validate_group_id(group_id)
+        self._validate_round_id(round_id)
+
+        return self.api_client.get_round_aggregate_model(group_id, round_id)
 
     def _validate_round_id(self, round_id):
         """

@@ -32,7 +32,22 @@ class IT_SubmitModelUpdateTestCase(unittest.TestCase):
 
         self.assertRaises(FedLearnApiException, client.submit_model_update, {}, "I_dont_exist", "123", "12313")
 
-    def test_fail_round_complete(self):
+    def test_fail_round_complete_pass_1(self):
+        # TODO : Add test key below
+        #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
+        client = FedLearnApi("uh_idk_what_to_put_here_yet")
+
+        group = client.create_group("sim_test_group")
+        device = client.register_device(group.get_id())
+        device_2 = client.register_device(group.get_id())
+        learning_round = client.start_round(group.get_id(), RoundConfiguration("2", "RANDOM"))
+
+        learning_round_2 = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
+        self.assertRaises(FedLearnApiException, client.submit_model_update, {}, group.get_id(), learning_round.get_id(), device.get_id())
+
+        client.delete_group(group.get_id())
+
+    def test_fail_round_complete_pass_2(self):
         # TODO : Add test key below
         #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
         client = FedLearnApi("uh_idk_what_to_put_here_yet")

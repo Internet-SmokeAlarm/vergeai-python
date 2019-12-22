@@ -1,3 +1,5 @@
+from .round_status import RoundStatus
+
 class Round:
 
     def __init__(self, id, status):
@@ -13,3 +15,6 @@ class Round:
 
     def get_status(self):
         return self.status
+
+    def is_completed(self):
+        return self.status == RoundStatus.COMPLETED
