@@ -12,3 +12,4 @@ from .get_model_update_submit_link import UT_GetModelUpdateSubmitLinkTestCase
 from .fedlearnapi import UT_FedLearnApiTestCase
 from .get_round_aggregate_model_download_link import UT_GetRoundAggregateModelDownloadLinkTestCase
 from .get_round_aggregate_model import UT_GetRoundAggregateModel
+from .get_group_current_round_id import UT_GetGroupCurrentRoundIdTestCase

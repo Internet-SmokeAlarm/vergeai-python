@@ -138,6 +138,17 @@ class FedLearnApi:
 
         return self.api_client.delete_group(group_id)
 
+    def get_group_current_round_id(self, group_id):
+        """
+        Gets the current round ID associated with a Federated Learning group.
+
+        :param group_id: string. ID of the group to remove
+        :return: A Round
+        """
+        self._validate_group_id(group_id)
+
+        return self.api_client.get_group_current_round_id(group_id)
+
     def start_round(self, group_id, round_configuration):
         """
         Start a new learning round. Requires round settings to be passed.
