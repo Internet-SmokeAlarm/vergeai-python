@@ -126,8 +126,9 @@ class ApiClient:
 
         id = response.json()["ID"]
         status = RoundStatus(response.json()["status"])
+        previous_round_id = response.json()["previous_round_id"]
 
-        return Round(id, status)
+        return Round(id, status, previous_round_id)
 
     def create_group(self, group_name):
         """
@@ -168,7 +169,7 @@ class ApiClient:
 
         self._validate_response(response)
 
-        return Round(response.json()["round_id"], RoundStatus.IN_PROGRESS)
+        return Round(response.json()["round_id"], RoundStatus.IN_PROGRESS, None)
 
     def is_device_active(self, group_id, device_id):
         """
@@ -182,6 +183,22 @@ class ApiClient:
         self._validate_response(response)
 
         return response.json()["is_device_active"]
+
+    def get_group_current_round_id(self, group_id):
+        """
+        :param group_id: string
+        :return: Round
+        """
+        data = {"group_id" : group_id}
+        response = self._post(FedLearnConfig.GET_CURRENT_ROUND_ID, data)
+
+        self._validate_response(response)
+
+        round_id = response.json()["round_id"]
+        round_status = RoundStatus(response.json()["round_status"])
+        previous_round_id = None
+
+        return Round(round_id, round_status, previous_round_id)
 
     def get_round_aggregate_model_download_link(self, group_id, round_id):
         """
