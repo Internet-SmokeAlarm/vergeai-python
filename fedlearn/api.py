@@ -142,8 +142,8 @@ class FedLearnApi:
         """
         Gets the current round ID associated with a Federated Learning group.
 
-        :param group_id: string. ID of the group to remove
-        :return: A Round
+        :param group_id: string. ID of the group
+        :return: string
         """
         self._validate_group_id(group_id)
 

@@ -187,18 +187,14 @@ class ApiClient:
     def get_group_current_round_id(self, group_id):
         """
         :param group_id: string
-        :return: Round
+        :return: string
         """
         data = {"group_id" : group_id}
         response = self._post(FedLearnConfig.GET_CURRENT_ROUND_ID, data)
 
         self._validate_response(response)
 
-        round_id = response.json()["round_id"]
-        round_status = RoundStatus(response.json()["round_status"])
-        previous_round_id = None
-
-        return Round(round_id, round_status, previous_round_id)
+        return response.json()["round_id"]
 
     def get_round_aggregate_model_download_link(self, group_id, round_id):
         """
