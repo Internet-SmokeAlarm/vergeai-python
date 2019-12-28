@@ -25,13 +25,6 @@ class IT_SubmitModelUpdateTestCase(unittest.TestCase):
 
         client.delete_group(group.get_id())
 
-    def test_fail_non_existant_group_id(self):
-        # TODO : Add test key below
-        #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
-        client = FedLearnApi("uh_idk_what_to_put_here_yet")
-
-        self.assertRaises(FedLearnApiException, client.submit_model_update, {}, "I_dont_exist", "123", "12313")
-
     def test_fail_round_complete_pass_1(self):
         # TODO : Add test key below
         #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
