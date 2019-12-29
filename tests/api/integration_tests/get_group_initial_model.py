@@ -14,9 +14,9 @@ class IT_GetInitialGroupModelTestCase(unittest.TestCase):
             model_data = json.load(f)
 
         group = client.create_group("sim_test_group")
-        client.submit_initial_group_model(model_data, group.get_id())
+        client.submit_group_initial_model(model_data, group.get_id())
 
-        retrieved_model_data = client.get_initial_group_model(group.get_id())
+        retrieved_model_data = client.get_group_initial_model(group.get_id())
 
         self.assertEqual(model_data.keys(), retrieved_model_data.keys())
         self.assertEqual(model_data, retrieved_model_data)

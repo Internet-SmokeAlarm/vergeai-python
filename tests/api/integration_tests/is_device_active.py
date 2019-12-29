@@ -1,4 +1,6 @@
 import unittest
+import json
+from time import sleep
 
 from fedlearn.models import RoundConfiguration
 from fedlearn import FedLearnApi
@@ -35,6 +37,8 @@ class IT_IsDeviceActiveTestCase(unittest.TestCase):
         with open("tests/data/mnist_cnn.json", "r") as f:
             model_data = json.load(f)
         client.submit_model_update(model_data, group.get_id(), round.get_id(), device.get_id())
+
+        sleep(5)
 
         self.assertFalse(client.is_device_active(group.get_id(), device.get_id()))
 

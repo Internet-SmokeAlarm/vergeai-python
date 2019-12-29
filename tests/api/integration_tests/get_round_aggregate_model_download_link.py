@@ -23,7 +23,7 @@ class IT_GetRoundAggregateModelDownloadLinkTestCase(unittest.TestCase):
 
         # Need to wait for the submit model update to trigger the model_uploaded lambda function
         # And the aggregate models function
-        while not client.get_round_state(group.get_id(), learning_round.get_id()).is_completed():
+        while not client.get_round(group.get_id(), learning_round.get_id()).is_completed():
             sleep(1)
         sleep(1)
 

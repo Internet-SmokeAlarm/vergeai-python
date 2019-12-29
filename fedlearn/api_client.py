@@ -1,5 +1,5 @@
 import requests
-from .config import FedLearnConfig
+from .config import FedLearnEndpointConfig
 from .exceptions import FedLearnApiException
 from .exceptions import FedLearnException
 
@@ -28,7 +28,7 @@ class ApiClient:
         :param group_id: string
         """
         data = {"group_id" : group_id}
-        response = self._post(FedLearnConfig.REGISTER_DEVICE_PATH, data)
+        response = self._post(FedLearnEndpointConfig.REGISTER_DEVICE, data)
 
         self._validate_response(response)
 
@@ -45,7 +45,7 @@ class ApiClient:
         :return: json. Dictionary that contains information necessary to submit model
         """
         data = {"group_id" : group_id, "round_id" : round_id, "device_id" : device_id}
-        response = self._post(FedLearnConfig.SUBMIT_MODEL_UPDATE_PATH, data)
+        response = self._post(FedLearnEndpointConfig.SUBMIT_MODEL_UPDATE, data)
 
         self._validate_response(response)
 
@@ -66,24 +66,24 @@ class ApiClient:
 
         return True
 
-    def get_initial_group_model_submit_link(self, group_id):
+    def get_group_initial_model_submit_link(self, group_id):
         """
         :param group_id: string
         :return: json. Dictionary that contains information necessary to submit model
         """
         data = {"group_id" : group_id}
-        response = self._post(FedLearnConfig.SUBMIT_INITIAL_GROUP_MODEL_PATH, data)
+        response = self._post(FedLearnEndpointConfig.SUBMIT_GROUP_INITIAL_MODEL, data)
 
         self._validate_response(response)
 
         return response.json()
 
-    def submit_initial_group_model(self, model_json, group_id):
+    def submit_group_initial_model(self, model_json, group_id):
         """
         :param model_json: json
         :param group_id: string
         """
-        upload_link_info = self.get_initial_group_model_submit_link(group_id)
+        upload_link_info = self.get_group_initial_model_submit_link(group_id)
 
         response = upload_data_to_s3_helper(model_json, upload_link_info)
 
@@ -91,22 +91,24 @@ class ApiClient:
 
         return True
 
-    def get_initial_group_model_download_link(self, group_id):
+    def get_group_initial_model_download_link(self, group_id):
         """
         :param group_id: string
         """
-        data = {"group_id" : group_id}
-        response = self._post(FedLearnConfig.GET_INITIAL_GROUP_MODEL_PATH, data)
+        data = {"GROUP_ID" : group_id}
+        url = self._assemble_url(FedLearnEndpointConfig.GET_GROUP_INITIAL_MODEL, data)
+
+        response = self._get(url)
 
         self._validate_response(response)
 
         return response.json()
 
-    def get_initial_group_model(self, group_id):
+    def get_group_initial_model(self, group_id):
         """
         :param group_id: string
         """
-        url_info = self.get_initial_group_model_download_link(group_id)
+        url_info = self.get_group_initial_model_download_link(group_id)
 
         response = download_model_from_s3_helper(url_info)
 
@@ -114,13 +116,14 @@ class ApiClient:
 
         return response.json()
 
-    def get_round_state(self, group_id, round_id):
+    def get_round(self, group_id, round_id):
         """
         :param group_id: string
         :param round_id: string
         """
-        data = {"group_id" : group_id, "round_id" : round_id}
-        response = self._post(FedLearnConfig.GET_ROUND_STATE_PATH, data)
+        data = {"GROUP_ID" : group_id, "ROUND_ID" : round_id}
+        url = self._assemble_url(FedLearnEndpointConfig.GET_ROUND, data)
+        response = self._get(url)
 
         self._validate_response(response)
 
@@ -136,7 +139,7 @@ class ApiClient:
         :return: Group
         """
         data = {"group_name" : group_name}
-        response = self._post(FedLearnConfig.CREATE_GROUP_PATH, data)
+        response = self._post(FedLearnEndpointConfig.CREATE_GROUP, data)
 
         self._validate_response(response)
 
@@ -148,7 +151,7 @@ class ApiClient:
         :return: boolean
         """
         data = {"group_id" : group_id}
-        response = self._post(FedLearnConfig.DELETE_GROUP_PATH, data)
+        response = self._post(FedLearnEndpointConfig.DELETE_GROUP, data)
 
         self._validate_response(response)
 
@@ -165,7 +168,7 @@ class ApiClient:
             "num_devices" : round_configuration.get_num_devices(),
             "device_selection_strategy" : round_configuration.get_device_selection_strategy()
         }
-        response = self._post(FedLearnConfig.START_ROUND_PATH, data)
+        response = self._post(FedLearnEndpointConfig.START_ROUND, data)
 
         self._validate_response(response)
 
@@ -177,8 +180,9 @@ class ApiClient:
         :param device_id: string
         :return: boolean
         """
-        data = {"group_id" : group_id, "device_id" : device_id}
-        response = self._post(FedLearnConfig.IS_DEVICE_ACTIVE_PATH, data)
+        data = {"GROUP_ID" : group_id, "DEVICE_ID" : device_id}
+        url = self._assemble_url(FedLearnEndpointConfig.IS_DEVICE_ACTIVE, data)
+        response = self._get(url)
 
         self._validate_response(response)
 
@@ -189,8 +193,9 @@ class ApiClient:
         :param group_id: string
         :return: string
         """
-        data = {"group_id" : group_id}
-        response = self._post(FedLearnConfig.GET_CURRENT_ROUND_ID, data)
+        data = {"GROUP_ID" : group_id}
+        url = self._assemble_url(FedLearnEndpointConfig.GET_CURRENT_ROUND_ID, data)
+        response = self._get(url)
 
         self._validate_response(response)
 
@@ -204,8 +209,9 @@ class ApiClient:
         :param round_id: string
         :return: dict. Model data
         """
-        data = {"group_id" : group_id, "round_id" : round_id}
-        response = self._post(FedLearnConfig.GET_ROUND_AGGREGATE_MODEL_PATH, data)
+        data = {"GROUP_ID" : group_id, "ROUND_ID" : round_id}
+        url = self._assemble_url(FedLearnEndpointConfig.GET_ROUND_AGGREGATE_MODEL, data)
+        response = self._get(url)
 
         self._validate_response(response)
 
@@ -234,12 +240,21 @@ class ApiClient:
         """
         return requests.post(url, json=json)
 
-    def _get(self, url, json):
+    def _get(self, url):
         """
         :param url: string
-        :param json: json
         """
-        return requests.get(url, json=json)
+        return requests.get(url)
+
+    def _assemble_url(self, base_url, item_pairs):
+        """
+        :param base_url: string
+        :param item_pairs: dict
+        """
+        for key, val in item_pairs.items():
+            base_url = base_url.replace(key, val)
+
+        return base_url
 
     def _validate_response(self, response):
         if response.status_code == 200 or response.status_code == 204:
