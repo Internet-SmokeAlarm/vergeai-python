@@ -145,6 +145,20 @@ class ApiClient:
 
         return Group(response.json()["group_id"])
 
+    def get_group(self, group_id):
+        """
+        :param group_id: string
+        """
+        data = {"GROUP_ID" : group_id}
+        url = self._assemble_url(FedLearnEndpointConfig.GET_GROUP, data)
+        response = self._get(url)
+
+        self._validate_response(response)
+
+        id = response.json()["ID"]
+
+        return Group(id)
+
     def delete_group(self, group_id):
         """
         :param group_id: string

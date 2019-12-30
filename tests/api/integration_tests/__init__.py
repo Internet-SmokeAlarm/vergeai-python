@@ -12,3 +12,4 @@ from .get_model_update_submit_link import IT_GetModelUpdateSubmitLinkTestCase
 from .get_round_aggregate_model_download_link import IT_GetRoundAggregateModelDownloadLinkTestCase
 from .get_round_aggregate_model import IT_GetRoundAggregateModel
 from .get_group_current_round_id import IT_GetGroupCurrentRoundIdTestCase
+from .get_group import IT_GetGroupTestCase

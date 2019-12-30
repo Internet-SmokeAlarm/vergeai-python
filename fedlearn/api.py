@@ -103,6 +103,16 @@ class FedLearnApi:
 
         return self.api_client.create_group(group_name)
 
+    def get_group(self, group_id):
+        """
+        Get a group.
+
+        :param group_id: string. Group ID
+        """
+        self._validate_group_id(group_id)
+
+        return self.api_client.get_group(group_id)
+
     def get_round(self, group_id, round_id):
         """
         Gets a learning round.

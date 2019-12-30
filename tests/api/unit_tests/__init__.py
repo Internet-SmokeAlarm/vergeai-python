@@ -14,3 +14,4 @@ from .get_round_aggregate_model_download_link import UT_GetRoundAggregateModelDo
 from .get_round_aggregate_model import UT_GetRoundAggregateModel
 from .get_group_current_round_id import UT_GetGroupCurrentRoundIdTestCase
 from .fedlearn_api_client import UT_FedLearnApiClientTestCase
+from .get_group import UT_GetGroupTestCase
