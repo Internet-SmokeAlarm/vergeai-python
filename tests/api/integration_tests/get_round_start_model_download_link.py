@@ -1,9 +1,11 @@
 import unittest
 import json
 
+from fedlearn.models import RoundConfiguration
 from fedlearn import FedLearnApi
+from fedlearn.exceptions import FedLearnApiException
 
-class IT_GetGroupInitialModelDownloadLinkTestCase(unittest.TestCase):
+class IT_GetRoundStartModelDownloadLinkTestCase(unittest.TestCase):
 
     def test_pass(self):
         # TODO : Add test key below
@@ -15,9 +17,10 @@ class IT_GetGroupInitialModelDownloadLinkTestCase(unittest.TestCase):
             model_data = json.load(f)
         client.submit_group_initial_model(model_data, group.get_id())
 
-        url_json = client.get_group_initial_model_download_link(group.get_id())
+        round = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
+        round_start_model_url = client.get_round_start_model_download_link(group.get_id(), round.get_id())
 
-        self.assertIsNotNone(url_json)
-        self.assertTrue(group.get_id() in url_json["model_url"])
+        self.assertIsNotNone(round_start_model_url)
+        self.assertTrue("model_url" in round_start_model_url)
 
         client.delete_group(group.get_id())

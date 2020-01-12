@@ -18,6 +18,8 @@ class IT_GetRoundAggregateModel(unittest.TestCase):
             model_data = json.load(f)
 
         group = client.create_group("sim_test_group")
+        client.submit_group_initial_model(model_data, group.get_id())
+
         device = client.register_device(group.get_id())
         learning_round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
         client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
@@ -46,6 +48,8 @@ class IT_GetRoundAggregateModel(unittest.TestCase):
             model_data_2 = json.load(f)
 
         group = client.create_group("sim_test_group")
+        client.submit_group_initial_model(model_data, group.get_id())
+
         device = client.register_device(group.get_id())
         device_2 = client.register_device(group.get_id())
         learning_round = client.start_round(group.get_id(), RoundConfiguration("2", "RANDOM"))

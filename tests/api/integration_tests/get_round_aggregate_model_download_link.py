@@ -17,6 +17,7 @@ class IT_GetRoundAggregateModelDownloadLinkTestCase(unittest.TestCase):
             model_data = json.load(f)
 
         group = client.create_group("sim_test_group")
+        client.submit_group_initial_model(model_data, group.get_id())
         device = client.register_device(group.get_id())
         learning_round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
         client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
@@ -38,6 +39,10 @@ class IT_GetRoundAggregateModelDownloadLinkTestCase(unittest.TestCase):
         #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
         client = FedLearnApi("uh_idk_what_to_put_here_yet")
         group = client.create_group("the_expanse_is_awesome")
+
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        client.submit_group_initial_model(model_data, group.get_id())
 
         round_config = RoundConfiguration("0", "RANDOM")
         round = client.start_round(group.get_id(), round_config)

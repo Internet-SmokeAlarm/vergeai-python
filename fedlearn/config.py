@@ -13,9 +13,10 @@ class FedLearnEndpointConfig:
     START_ROUND = PROD_ENDPOINT + "v1/round/start"
     GET_ROUND = PROD_ENDPOINT + "v1/round/get/GROUP_ID/ROUND_ID"
     GET_ROUND_AGGREGATE_MODEL = PROD_ENDPOINT + "v1/round/get/aggregate_model/GROUP_ID/ROUND_ID"
+    GET_ROUND_START_MODEL = PROD_ENDPOINT + "v1/round/get/start_model/GROUP_ID/ROUND_ID"
 
     REGISTER_DEVICE = PROD_ENDPOINT + "v1/device/register"
     SUBMIT_MODEL_UPDATE = PROD_ENDPOINT + "v1/submit_model_update"
-    IS_DEVICE_ACTIVE = PROD_ENDPOINT + "v1/device/get/active/GROUP_ID/DEVICE_ID"
+    IS_DEVICE_ACTIVE = PROD_ENDPOINT + "v1/device/get/active/GROUP_ID/ROUND_ID/DEVICE_ID"
 
     GET_GROUP = PROD_ENDPOINT + "v1/group/get/GROUP_ID"

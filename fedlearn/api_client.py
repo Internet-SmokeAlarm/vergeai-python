@@ -1,4 +1,6 @@
 import requests
+from time import sleep
+
 from .config import FedLearnEndpointConfig
 from .exceptions import FedLearnApiException
 from .exceptions import FedLearnException
@@ -64,6 +66,10 @@ class ApiClient:
 
         self._validate_response(response)
 
+        # NOTE: Need to make sure that enough time is given for remote Lambdas to execute
+        # TODO: Replace this with API calls to wait until the DB operations are complete
+        sleep(2)
+
         return True
 
     def get_group_initial_model_submit_link(self, group_id):
@@ -86,6 +92,10 @@ class ApiClient:
         upload_link_info = self.get_group_initial_model_submit_link(group_id)
 
         response = upload_data_to_s3_helper(model_json, upload_link_info)
+
+        # NOTE: Need to make sure that enough time is given for remote Lambdas to execute
+        # TODO: Replace this with API calls to wait until the DB operations are complete
+        sleep(2)
 
         self._validate_response(response)
 
@@ -188,19 +198,45 @@ class ApiClient:
 
         return Round(response.json()["round_id"], RoundStatus.IN_PROGRESS, None)
 
-    def is_device_active(self, group_id, device_id):
+    def is_device_active(self, group_id, round_id, device_id):
         """
         :param group_id: string
+        :param round_id: string
         :param device_id: string
         :return: boolean
         """
-        data = {"GROUP_ID" : group_id, "DEVICE_ID" : device_id}
+        data = {"GROUP_ID" : group_id, "ROUND_ID" : round_id, "DEVICE_ID" : device_id}
         url = self._assemble_url(FedLearnEndpointConfig.IS_DEVICE_ACTIVE, data)
         response = self._get(url)
 
         self._validate_response(response)
 
         return response.json()["is_device_active"]
+
+    def get_round_start_model_download_link(self, group_id, round_id):
+        """
+        :param group_id: string
+        :param round_id: string
+        """
+        data = {"GROUP_ID" : group_id, "ROUND_ID" : round_id}
+        url = self._assemble_url(FedLearnEndpointConfig.GET_ROUND_START_MODEL, data)
+        response = self._get(url)
+
+        self._validate_response(response)
+
+        return response.json()
+
+    def get_round_start_model(self, group_id, round_id):
+        """
+        :param group_id: string
+        :param round_id: string
+        """
+        url_info = self.get_round_start_model_download_link(group_id, round_id)
+        response = download_model_from_s3_helper(url_info)
+
+        self._validate_response(response)
+
+        return response.json()
 
     def get_group_current_round_id(self, group_id):
         """

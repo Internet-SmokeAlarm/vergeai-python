@@ -1,4 +1,5 @@
 import unittest
+import json
 
 from fedlearn.models import RoundConfiguration
 from fedlearn.models import RoundStatus
@@ -12,6 +13,10 @@ class IT_GetRoundTestCase(unittest.TestCase):
         #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
         client = FedLearnApi("uh_idk_what_to_put_here_yet")
         group = client.create_group("sim_test_group")
+
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        client.submit_group_initial_model(model_data, group.get_id())
 
         learning_round = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
 
@@ -30,6 +35,10 @@ class IT_GetRoundTestCase(unittest.TestCase):
         client = FedLearnApi("uh_idk_what_to_put_here_yet")
         group = client.create_group("sim_test_group")
 
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        client.submit_group_initial_model(model_data, group.get_id())
+
         learning_round = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
         learning_round_2 = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
 
@@ -47,6 +56,10 @@ class IT_GetRoundTestCase(unittest.TestCase):
         #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
         client = FedLearnApi("uh_idk_what_to_put_here_yet")
         group = client.create_group("sim_test_group")
+
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        client.submit_group_initial_model(model_data, group.get_id())
 
         learning_round = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
         self.assertRaises(FedLearnApiException, client.get_round, group.get_id(), "i_dont_exist_woo_hoo")

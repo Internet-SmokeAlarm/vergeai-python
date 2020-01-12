@@ -17,6 +17,9 @@ class IT_SubmitModelUpdateTestCase(unittest.TestCase):
 
         group = client.create_group("sim_test_group")
         device = client.register_device(group.get_id())
+
+        client.submit_group_initial_model(model_data, group.get_id())
+
         learning_round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
 
         success = client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
@@ -33,6 +36,11 @@ class IT_SubmitModelUpdateTestCase(unittest.TestCase):
         group = client.create_group("sim_test_group")
         device = client.register_device(group.get_id())
         device_2 = client.register_device(group.get_id())
+
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        client.submit_group_initial_model(model_data, group.get_id())
+
         learning_round = client.start_round(group.get_id(), RoundConfiguration("2", "RANDOM"))
 
         learning_round_2 = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
@@ -47,6 +55,11 @@ class IT_SubmitModelUpdateTestCase(unittest.TestCase):
 
         group = client.create_group("sim_test_group")
         device = client.register_device(group.get_id())
+
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        client.submit_group_initial_model(model_data, group.get_id())
+
         learning_round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
 
         learning_round_2 = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
@@ -60,6 +73,10 @@ class IT_SubmitModelUpdateTestCase(unittest.TestCase):
         client = FedLearnApi("uh_idk_what_to_put_here_yet")
 
         group = client.create_group("sim_test_group")
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        client.submit_group_initial_model(model_data, group.get_id())
+
         learning_round = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
         device = client.register_device(group.get_id())
 
