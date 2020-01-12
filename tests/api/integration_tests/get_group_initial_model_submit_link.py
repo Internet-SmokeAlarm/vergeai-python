@@ -2,7 +2,7 @@ import unittest
 
 from fedlearn import FedLearnApi
 
-class IT_GetInitialGroupModelSubmitLinkTestCase(unittest.TestCase):
+class IT_GetGroupInitialModelSubmitLinkTestCase(unittest.TestCase):
 
     def test_pass(self):
         # TODO : Add test key below
@@ -11,7 +11,7 @@ class IT_GetInitialGroupModelSubmitLinkTestCase(unittest.TestCase):
 
         group = client.create_group("sim_test_group")
 
-        response = client.get_initial_group_model_submit_link(group.get_id())
+        response = client.get_group_initial_model_submit_link(group.get_id())
 
         self.assertTrue("model_url" in response)
         self.assertTrue(group.get_id() in response["model_url"]["fields"]["key"])

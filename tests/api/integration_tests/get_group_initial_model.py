@@ -3,7 +3,7 @@ import json
 
 from fedlearn import FedLearnApi
 
-class IT_SubmitInitialGroupModelTestCase(unittest.TestCase):
+class IT_GetInitialGroupModelTestCase(unittest.TestCase):
 
     def test_pass(self):
         # TODO : Add test key below
@@ -14,9 +14,11 @@ class IT_SubmitInitialGroupModelTestCase(unittest.TestCase):
             model_data = json.load(f)
 
         group = client.create_group("sim_test_group")
+        client.submit_group_initial_model(model_data, group.get_id())
 
-        success = client.submit_initial_group_model(model_data, group.get_id())
+        retrieved_model_data = client.get_group_initial_model(group.get_id())
 
-        self.assertTrue(success)
+        self.assertEqual(model_data.keys(), retrieved_model_data.keys())
+        self.assertEqual(model_data, retrieved_model_data)
 
         client.delete_group(group.get_id())
