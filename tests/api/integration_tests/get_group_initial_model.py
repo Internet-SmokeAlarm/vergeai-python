@@ -1,5 +1,6 @@
 import unittest
 import json
+from time import sleep
 
 from fedlearn import FedLearnApi
 
@@ -15,6 +16,10 @@ class IT_GetInitialGroupModelTestCase(unittest.TestCase):
 
         group = client.create_group("sim_test_group")
         client.submit_group_initial_model(model_data, group.get_id())
+
+        while not client.get_group(group.get_id()).is_initial_model_set():
+            sleep(1)
+        sleep(1)
 
         retrieved_model_data = client.get_group_initial_model(group.get_id())
 

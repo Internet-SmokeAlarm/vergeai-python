@@ -18,6 +18,11 @@ class IT_GetRoundAggregateModelDownloadLinkTestCase(unittest.TestCase):
 
         group = client.create_group("sim_test_group")
         client.submit_group_initial_model(model_data, group.get_id())
+
+        while not client.get_group(group.get_id()).is_initial_model_set():
+            sleep(1)
+        sleep(1)
+
         device = client.register_device(group.get_id())
         learning_round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
         client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
@@ -43,6 +48,10 @@ class IT_GetRoundAggregateModelDownloadLinkTestCase(unittest.TestCase):
         with open("tests/data/mnist_cnn.json", "r") as f:
             model_data = json.load(f)
         client.submit_group_initial_model(model_data, group.get_id())
+
+        while not client.get_group(group.get_id()).is_initial_model_set():
+            sleep(1)
+        sleep(1)
 
         round_config = RoundConfiguration("0", "RANDOM")
         round = client.start_round(group.get_id(), round_config)

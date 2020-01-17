@@ -1,11 +1,10 @@
 import requests
-from time import sleep
 
 from .config import FedLearnEndpointConfig
 from .exceptions import FedLearnApiException
 from .exceptions import FedLearnException
 
-from .models import Group
+from .models import GroupBuilder
 from .models import Round
 from .models import Device
 from .models import RoundStatus
@@ -66,10 +65,6 @@ class ApiClient:
 
         self._validate_response(response)
 
-        # NOTE: Need to make sure that enough time is given for remote Lambdas to execute
-        # TODO: Replace this with API calls to wait until the DB operations are complete
-        sleep(2)
-
         return True
 
     def get_group_initial_model_submit_link(self, group_id):
@@ -92,10 +87,6 @@ class ApiClient:
         upload_link_info = self.get_group_initial_model_submit_link(group_id)
 
         response = upload_data_to_s3_helper(model_json, upload_link_info)
-
-        # NOTE: Need to make sure that enough time is given for remote Lambdas to execute
-        # TODO: Replace this with API calls to wait until the DB operations are complete
-        sleep(2)
 
         self._validate_response(response)
 
@@ -153,7 +144,12 @@ class ApiClient:
 
         self._validate_response(response)
 
-        return Group(response.json()["group_id"])
+        json_data = response.json()
+        builder = GroupBuilder()
+        builder.set_id(json_data["group_id"])
+        builder.set_name(group_name)
+
+        return builder.build()
 
     def get_group(self, group_id):
         """
@@ -165,9 +161,16 @@ class ApiClient:
 
         self._validate_response(response)
 
-        id = response.json()["ID"]
+        json_data = response.json()
+        builder = GroupBuilder()
+        builder.set_id(json_data["ID"])
+        builder.set_name(json_data["name"])
+        builder.set_devices(json_data["devices"])
+        builder.set_current_round_id(json_data["current_round_id"])
+        builder.set_is_initial_model_set(json_data["is_initial_model_set"])
+        builder.set_rounds(json_data["rounds"])
 
-        return Group(id)
+        return builder.build()
 
     def delete_group(self, group_id):
         """

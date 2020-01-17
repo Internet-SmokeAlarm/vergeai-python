@@ -1,5 +1,6 @@
 import unittest
 import json
+from time import sleep
 
 from fedlearn.models import RoundConfiguration
 from fedlearn.models import RoundStatus
@@ -17,6 +18,10 @@ class IT_GetRoundTestCase(unittest.TestCase):
         with open("tests/data/mnist_cnn.json", "r") as f:
             model_data = json.load(f)
         client.submit_group_initial_model(model_data, group.get_id())
+
+        while not client.get_group(group.get_id()).is_initial_model_set():
+            sleep(1)
+        sleep(1)
 
         learning_round = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
 
@@ -39,6 +44,10 @@ class IT_GetRoundTestCase(unittest.TestCase):
             model_data = json.load(f)
         client.submit_group_initial_model(model_data, group.get_id())
 
+        while not client.get_group(group.get_id()).is_initial_model_set():
+            sleep(1)
+        sleep(1)
+
         learning_round = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
         learning_round_2 = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
 
@@ -60,6 +69,10 @@ class IT_GetRoundTestCase(unittest.TestCase):
         with open("tests/data/mnist_cnn.json", "r") as f:
             model_data = json.load(f)
         client.submit_group_initial_model(model_data, group.get_id())
+
+        while not client.get_group(group.get_id()).is_initial_model_set():
+            sleep(1)
+        sleep(1)
 
         learning_round = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
         self.assertRaises(FedLearnApiException, client.get_round, group.get_id(), "i_dont_exist_woo_hoo")
