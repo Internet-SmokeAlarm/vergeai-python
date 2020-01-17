@@ -1,5 +1,6 @@
 import unittest
 import json
+from time import sleep
 
 from fedlearn import FedLearnApi
 from fedlearn.exceptions import FedLearnApiException
@@ -16,6 +17,10 @@ class IT_GetGroupCurrentRoundIdTestCase(unittest.TestCase):
         with open("tests/data/mnist_cnn.json", "r") as f:
             model_data = json.load(f)
         client.submit_group_initial_model(model_data, group.get_id())
+
+        while not client.get_group(group.get_id()).is_initial_model_set():
+            sleep(1)
+        sleep(1)
 
         round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
 

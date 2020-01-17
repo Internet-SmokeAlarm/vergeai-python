@@ -18,6 +18,11 @@ class IT_GetRoundStartModelTestCase(unittest.TestCase):
             model_data = json.load(f)
 
         client.submit_group_initial_model(model_data, group.get_id())
+
+        while not client.get_group(group.get_id()).is_initial_model_set():
+            sleep(1)
+        sleep(1)
+
         round = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
         round_start_model = client.get_round_start_model(group.get_id(), round.get_id())
 
@@ -35,6 +40,11 @@ class IT_GetRoundStartModelTestCase(unittest.TestCase):
             model_data = json.load(f)
 
         client.submit_group_initial_model(model_data, group.get_id())
+
+        while not client.get_group(group.get_id()).is_initial_model_set():
+            sleep(1)
+        sleep(1)
+
         round = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
         round_start_model = client.get_round_start_model(group.get_id(), round.get_id())
 
@@ -56,6 +66,11 @@ class IT_GetRoundStartModelTestCase(unittest.TestCase):
             device_update_model_data = json.load(f)
 
         client.submit_group_initial_model(group_initial_model_data, group.get_id())
+
+        while not client.get_group(group.get_id()).is_initial_model_set():
+            sleep(1)
+        sleep(1)
+
         round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
         client.submit_model_update(device_update_model_data, group.get_id(), round.get_id(), device.get_id())
 

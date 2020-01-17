@@ -19,6 +19,10 @@ class IT_IsDeviceActiveTestCase(unittest.TestCase):
             model_data = json.load(f)
         client.submit_group_initial_model(model_data, group.get_id())
 
+        while not client.get_group(group.get_id()).is_initial_model_set():
+            sleep(1)
+        sleep(1)
+
         round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
         device_2 = client.register_device(group.get_id())
 
@@ -38,6 +42,10 @@ class IT_IsDeviceActiveTestCase(unittest.TestCase):
             model_data = json.load(f)
         client.submit_group_initial_model(model_data, group.get_id())
 
+        while not client.get_group(group.get_id()).is_initial_model_set():
+            sleep(1)
+        sleep(1)
+
         round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
         device_2 = client.register_device(group.get_id())
 
@@ -45,6 +53,8 @@ class IT_IsDeviceActiveTestCase(unittest.TestCase):
         self.assertFalse(client.is_device_active(group.get_id(), round.get_id(), device_2.get_id()))
 
         client.submit_model_update(model_data, group.get_id(), round.get_id(), device.get_id())
+
+        sleep(4)
 
         self.assertFalse(client.is_device_active(group.get_id(), round.get_id(), device.get_id()))
 
