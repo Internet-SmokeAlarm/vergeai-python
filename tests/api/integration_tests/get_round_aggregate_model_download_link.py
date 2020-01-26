@@ -6,12 +6,13 @@ from fedlearn import FedLearnApi
 from fedlearn.models import RoundConfiguration
 from fedlearn.exceptions import FedLearnApiException
 
+from .get_env_vars import load_env_vars
+
 class IT_GetRoundAggregateModelDownloadLinkTestCase(unittest.TestCase):
 
     def test_pass(self):
-        # TODO : Add test key below
-        #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
-        client = FedLearnApi("uh_idk_what_to_put_here_yet")
+        cloud_gateway_url, api_key = load_env_vars()
+        client = FedLearnApi(cloud_gateway_url, api_key)
 
         with open("tests/data/mnist_cnn.json", "r") as f:
             model_data = json.load(f)
@@ -40,9 +41,8 @@ class IT_GetRoundAggregateModelDownloadLinkTestCase(unittest.TestCase):
         client.delete_group(group.get_id())
 
     def test_fail_round_incomplete(self):
-        # TODO : Add test key below
-        #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
-        client = FedLearnApi("uh_idk_what_to_put_here_yet")
+        cloud_gateway_url, api_key = load_env_vars()
+        client = FedLearnApi(cloud_gateway_url, api_key)
         group = client.create_group("the_expanse_is_awesome")
 
         with open("tests/data/mnist_cnn.json", "r") as f:
@@ -61,9 +61,8 @@ class IT_GetRoundAggregateModelDownloadLinkTestCase(unittest.TestCase):
         client.delete_group(group.get_id())
 
     def test_fail_round_nonexistant(self):
-        # TODO : Add test key below
-        #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
-        client = FedLearnApi("uh_idk_what_to_put_here_yet")
+        cloud_gateway_url, api_key = load_env_vars()
+        client = FedLearnApi(cloud_gateway_url, api_key)
         group = client.create_group("the_expanse_is_awesome")
 
         self.assertRaises(FedLearnApiException, client.get_round_aggregate_model_download_link, group.get_id(), "213123")

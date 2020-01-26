@@ -7,12 +7,13 @@ from torch import tensor
 from fedlearn import FedLearnApi
 from fedlearn.models import RoundConfiguration
 
+from .get_env_vars import load_env_vars
+
 class IT_GetRoundAggregateModel(unittest.TestCase):
 
     def test_pass_1(self):
-        # TODO : Add test key below
-        #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
-        client = FedLearnApi("uh_idk_what_to_put_here_yet")
+        cloud_gateway_url, api_key = load_env_vars()
+        client = FedLearnApi(cloud_gateway_url, api_key)
 
         with open("tests/data/mnist_cnn.json", "r") as f:
             model_data = json.load(f)
@@ -41,9 +42,8 @@ class IT_GetRoundAggregateModel(unittest.TestCase):
         client.delete_group(group.get_id())
 
     def test_pass_2(self):
-        # TODO : Add test key below
-        #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
-        client = FedLearnApi("uh_idk_what_to_put_here_yet")
+        cloud_gateway_url, api_key = load_env_vars()
+        client = FedLearnApi(cloud_gateway_url, api_key)
 
         with open("tests/data/mnist_cnn.json", "r") as f:
             model_data = json.load(f)
