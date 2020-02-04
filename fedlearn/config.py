@@ -16,3 +16,5 @@ class FedLearnEndpointConfig:
     IS_DEVICE_ACTIVE = "v1/device/get/active/GROUP_ID/ROUND_ID/DEVICE_ID"
 
     GET_GROUP = "v1/group/get/GROUP_ID"
+
+    CREATE_API_KEY = "v1/auth/create_key"

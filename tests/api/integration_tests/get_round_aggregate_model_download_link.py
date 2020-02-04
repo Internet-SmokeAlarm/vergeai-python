@@ -5,6 +5,7 @@ from time import sleep
 from fedlearn import FedLearnApi
 from fedlearn.models import RoundConfiguration
 from fedlearn.exceptions import FedLearnApiException
+from fedlearn.exceptions import FedLearnException
 
 from .get_env_vars import load_env_vars
 
@@ -26,7 +27,9 @@ class IT_GetRoundAggregateModelDownloadLinkTestCase(unittest.TestCase):
 
         device = client.register_device(group.get_id())
         learning_round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
-        client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
+
+        device_client = FedLearnApi(cloud_gateway_url, device.get_api_key())
+        device_client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
 
         # Need to wait for the submit model update to trigger the model_uploaded lambda function
         # And the aggregate models function

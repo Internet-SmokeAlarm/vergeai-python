@@ -238,6 +238,14 @@ class FedLearnApi:
 
         return self.api_client.get_round_aggregate_model(group_id, round_id)
 
+    def create_api_key(self):
+        """
+        Will create an API key for the existing user.
+
+        :return: string. Key plaintext value
+        """
+        return self.api_client.create_api_key()
+
     def _validate_round_id(self, round_id):
         """
         :param round_id: string

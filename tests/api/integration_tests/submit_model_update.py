@@ -28,7 +28,8 @@ class IT_SubmitModelUpdateTestCase(unittest.TestCase):
 
         learning_round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
 
-        success = client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
+        device_client = FedLearnApi(cloud_gateway_url, device.get_api_key())
+        success = device_client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
 
         self.assertTrue(success)
 
@@ -53,7 +54,8 @@ class IT_SubmitModelUpdateTestCase(unittest.TestCase):
         learning_round = client.start_round(group.get_id(), RoundConfiguration("2", "RANDOM"))
 
         learning_round_2 = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
-        self.assertRaises(FedLearnApiException, client.submit_model_update, {}, group.get_id(), learning_round.get_id(), device.get_id())
+        device_client = FedLearnApi(cloud_gateway_url, device.get_api_key())
+        self.assertRaises(FedLearnApiException, device_client.submit_model_update, {}, group.get_id(), learning_round.get_id(), device.get_id())
 
         client.delete_group(group.get_id())
 
@@ -75,7 +77,8 @@ class IT_SubmitModelUpdateTestCase(unittest.TestCase):
         learning_round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
 
         learning_round_2 = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
-        self.assertRaises(FedLearnApiException, client.submit_model_update, {}, group.get_id(), learning_round.get_id(), device.get_id())
+        device_client = FedLearnApi(cloud_gateway_url, device.get_api_key())
+        self.assertRaises(FedLearnApiException, device_client.submit_model_update, {}, group.get_id(), learning_round.get_id(), device.get_id())
 
         client.delete_group(group.get_id())
 
@@ -95,6 +98,7 @@ class IT_SubmitModelUpdateTestCase(unittest.TestCase):
         learning_round = client.start_round(group.get_id(), RoundConfiguration("0", "RANDOM"))
         device = client.register_device(group.get_id())
 
-        self.assertRaises(FedLearnApiException, client.submit_model_update, {}, group.get_id(), learning_round.get_id(), device.get_id())
+        device_client = FedLearnApi(cloud_gateway_url, device.get_api_key())
+        self.assertRaises(FedLearnApiException, device_client.submit_model_update, {}, group.get_id(), learning_round.get_id(), device.get_id())
 
         client.delete_group(group.get_id())

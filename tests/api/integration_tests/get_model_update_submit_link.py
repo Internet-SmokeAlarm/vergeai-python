@@ -26,7 +26,8 @@ class IT_GetModelUpdateSubmitLinkTestCase(unittest.TestCase):
         device = client.register_device(group.get_id())
         learning_round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
 
-        response = client.get_model_update_submit_link(group.get_id(), learning_round.get_id(), device.get_id())
+        device_client = FedLearnApi(cloud_gateway_url, device.get_api_key())
+        response = device_client.get_model_update_submit_link(group.get_id(), learning_round.get_id(), device.get_id())
 
         self.assertTrue("model_url" in response)
         self.assertTrue(group.get_id() in response["model_url"]["fields"]["key"])

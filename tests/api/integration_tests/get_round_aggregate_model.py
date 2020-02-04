@@ -27,7 +27,9 @@ class IT_GetRoundAggregateModel(unittest.TestCase):
 
         device = client.register_device(group.get_id())
         learning_round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
-        client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
+
+        device_client = FedLearnApi(cloud_gateway_url, device.get_api_key())
+        device_client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
 
         # Need to wait for the submit model update to trigger the model_uploaded lambda function
         # And the aggregate models function
@@ -61,8 +63,12 @@ class IT_GetRoundAggregateModel(unittest.TestCase):
         device = client.register_device(group.get_id())
         device_2 = client.register_device(group.get_id())
         learning_round = client.start_round(group.get_id(), RoundConfiguration("2", "RANDOM"))
-        client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
-        client.submit_model_update(model_data_2, group.get_id(), learning_round.get_id(), device_2.get_id())
+
+        device_client = FedLearnApi(cloud_gateway_url, device.get_api_key())
+        device_client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
+
+        device_client_2 = FedLearnApi(cloud_gateway_url, device_2.get_api_key())
+        device_client_2.submit_model_update(model_data_2, group.get_id(), learning_round.get_id(), device_2.get_id())
 
         # Need to wait for the submit model update to trigger the model_uploaded lambda function
         # And the aggregate models function

@@ -52,7 +52,8 @@ class IT_IsDeviceActiveTestCase(unittest.TestCase):
         self.assertTrue(client.is_device_active(group.get_id(), round.get_id(), device.get_id()))
         self.assertFalse(client.is_device_active(group.get_id(), round.get_id(), device_2.get_id()))
 
-        client.submit_model_update(model_data, group.get_id(), round.get_id(), device.get_id())
+        device_client = FedLearnApi(cloud_gateway_url, device.get_api_key())
+        device_client.submit_model_update(model_data, group.get_id(), round.get_id(), device.get_id())
 
         sleep(4)
 

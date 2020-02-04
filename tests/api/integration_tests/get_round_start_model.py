@@ -71,7 +71,9 @@ class IT_GetRoundStartModelTestCase(unittest.TestCase):
         sleep(1)
 
         round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
-        client.submit_model_update(device_update_model_data, group.get_id(), round.get_id(), device.get_id())
+
+        device_client = FedLearnApi(cloud_gateway_url, device.get_api_key())
+        device_client.submit_model_update(device_update_model_data, group.get_id(), round.get_id(), device.get_id())
 
         sleep(4)
 

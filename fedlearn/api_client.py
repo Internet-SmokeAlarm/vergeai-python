@@ -184,7 +184,7 @@ class ApiClient:
 
         self._validate_response(response)
 
-        return response.json()["success"]
+        return True
 
     def start_round(self, group_id, round_configuration):
         """
@@ -288,6 +288,18 @@ class ApiClient:
 
         return response.json()
 
+    def create_api_key(self):
+        """
+        Creates an API key.
+
+        :return: string. Key plaintext
+        """
+        response = self._post(FedLearnEndpointConfig.CREATE_API_KEY, {})
+
+        self._validate_response(response)
+
+        return response.json()["key"]
+
     def _post(self, url, json):
         """
         :param url: string
@@ -316,7 +328,7 @@ class ApiClient:
     def _validate_response(self, response):
         if response.status_code == 200 or response.status_code == 204:
             return
-        elif response.status_code == 400 or response.status_code == 403:
+        elif response.status_code == 400 or response.status_code == 403 or response.status_code == 401:
             raise FedLearnApiException(response.text)
         else:
             raise FedLearnException(response.text)

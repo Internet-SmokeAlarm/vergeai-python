@@ -15,3 +15,4 @@ from .get_group_current_round_id import IT_GetGroupCurrentRoundIdTestCase
 from .get_group import IT_GetGroupTestCase
 from .get_round_start_model import IT_GetRoundStartModelTestCase
 from .get_round_start_model_download_link import IT_GetRoundStartModelDownloadLinkTestCase
+from .create_api_key import IT_CreateApiKeyTestCase
