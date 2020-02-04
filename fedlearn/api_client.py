@@ -18,10 +18,12 @@ class ApiClient:
     to access the Federated Learning system.
     """
 
-    def __init__(self, api_key):
+    def __init__(self, cloud_gateway_url, api_key):
         """
+        :param cloud_gateway_url: string
         :param api_key: string
         """
+        self.cloud_gateway_url = cloud_gateway_url
         self.api_key = api_key
 
     def register_device(self, group_id):
@@ -182,7 +184,7 @@ class ApiClient:
 
         self._validate_response(response)
 
-        return response.json()["success"]
+        return True
 
     def start_round(self, group_id, round_configuration):
         """
@@ -286,33 +288,47 @@ class ApiClient:
 
         return response.json()
 
+    def create_api_key(self):
+        """
+        Creates an API key.
+
+        :return: string. Key plaintext
+        """
+        response = self._post(FedLearnEndpointConfig.CREATE_API_KEY, {})
+
+        self._validate_response(response)
+
+        return response.json()["key"]
+
     def _post(self, url, json):
         """
         :param url: string
         :param json: json
         """
-        return requests.post(url, json=json)
+        url = self.cloud_gateway_url + url
+        return requests.post(url, json=json, headers={'Authorization': self.api_key})
 
     def _get(self, url):
         """
         :param url: string
         """
-        return requests.get(url)
+        url = self.cloud_gateway_url + url
+        return requests.get(url, headers={'Authorization': self.api_key})
 
-    def _assemble_url(self, base_url, item_pairs):
+    def _assemble_url(self, path, item_pairs):
         """
-        :param base_url: string
+        :param path: string
         :param item_pairs: dict
         """
         for key, val in item_pairs.items():
-            base_url = base_url.replace(key, val)
+            path = path.replace(key, val)
 
-        return base_url
+        return path
 
     def _validate_response(self, response):
         if response.status_code == 200 or response.status_code == 204:
             return
-        elif response.status_code == 400 or response.status_code == 403:
+        elif response.status_code == 400 or response.status_code == 403 or response.status_code == 401:
             raise FedLearnApiException(response.text)
         else:
             raise FedLearnException(response.text)

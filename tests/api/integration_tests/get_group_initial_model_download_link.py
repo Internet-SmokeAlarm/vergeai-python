@@ -4,12 +4,13 @@ from time import sleep
 
 from fedlearn import FedLearnApi
 
+from .get_env_vars import load_env_vars
+
 class IT_GetGroupInitialModelDownloadLinkTestCase(unittest.TestCase):
 
     def test_pass(self):
-        # TODO : Add test key below
-        #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
-        client = FedLearnApi("uh_idk_what_to_put_here_yet")
+        cloud_gateway_url, api_key = load_env_vars()
+        client = FedLearnApi(cloud_gateway_url, api_key)
         group = client.create_group("sim_test_group")
 
         with open("tests/data/mnist_cnn.json", "r") as f:

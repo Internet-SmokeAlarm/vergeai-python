@@ -4,8 +4,12 @@ from .exceptions import FedLearnApiException
 
 class FedLearnApi:
 
-    def __init__(self, api_key):
-        self.api_client = ApiClient(api_key)
+    def __init__(self, cloud_gateway_url, api_key):
+        """
+        :param cloud_gateway_url: string. Full URL (including ending backslash) of backing FedLearn infrastructure.
+        :param api_key: string. API Key to use for authentication.
+        """
+        self.api_client = ApiClient(cloud_gateway_url, api_key)
 
     def get_model_update_submit_link(self, group_id, round_id, device_id):
         """
@@ -233,6 +237,14 @@ class FedLearnApi:
         self._validate_round_id(round_id)
 
         return self.api_client.get_round_aggregate_model(group_id, round_id)
+
+    def create_api_key(self):
+        """
+        Will create an API key for the existing user.
+
+        :return: string. Key plaintext value
+        """
+        return self.api_client.create_api_key()
 
     def _validate_round_id(self, round_id):
         """

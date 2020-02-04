@@ -5,7 +5,7 @@ from fedlearn.api_client import ApiClient
 class UT_FedLearnApiClientTestCase(unittest.TestCase):
 
     def test_assemble_url(self):
-        api_client = ApiClient("API_KEY")
+        api_client = ApiClient("GATEWAY_URL", "API_KEY")
 
         base_url = "/v1/ROUND_ID/GROUP_ID/hello_world"
         data = {

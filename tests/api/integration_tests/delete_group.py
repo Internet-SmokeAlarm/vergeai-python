@@ -1,12 +1,14 @@
 import unittest
 
 from fedlearn import FedLearnApi
+from fedlearn.exceptions import FedLearnApiException
+
+from .get_env_vars import load_env_vars
 
 class IT_DeleteGroupTestCase(unittest.TestCase):
 
-    def test_pass_nonexistant_group(self):
-        # TODO : Add test key below
-        #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
-        client = FedLearnApi("uh_idk_what_to_put_here_yet")
+    def test_fail_nonexistant_group(self):
+        cloud_gateway_url, api_key = load_env_vars()
+        client = FedLearnApi(cloud_gateway_url, api_key)
 
-        self.assertTrue(client.delete_group("i_dont_exist_woo_hoo"))
+        self.assertRaises(FedLearnApiException, client.delete_group, "i_dont_exist_woo_hoo")

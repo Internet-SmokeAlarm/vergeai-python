@@ -7,12 +7,13 @@ from torch import tensor
 from fedlearn import FedLearnApi
 from fedlearn.models import RoundConfiguration
 
+from .get_env_vars import load_env_vars
+
 class IT_GetRoundAggregateModel(unittest.TestCase):
 
     def test_pass_1(self):
-        # TODO : Add test key below
-        #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
-        client = FedLearnApi("uh_idk_what_to_put_here_yet")
+        cloud_gateway_url, api_key = load_env_vars()
+        client = FedLearnApi(cloud_gateway_url, api_key)
 
         with open("tests/data/mnist_cnn.json", "r") as f:
             model_data = json.load(f)
@@ -26,7 +27,9 @@ class IT_GetRoundAggregateModel(unittest.TestCase):
 
         device = client.register_device(group.get_id())
         learning_round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
-        client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
+
+        device_client = FedLearnApi(cloud_gateway_url, device.get_api_key())
+        device_client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
 
         # Need to wait for the submit model update to trigger the model_uploaded lambda function
         # And the aggregate models function
@@ -41,9 +44,8 @@ class IT_GetRoundAggregateModel(unittest.TestCase):
         client.delete_group(group.get_id())
 
     def test_pass_2(self):
-        # TODO : Add test key below
-        #   NOTE: Test key should only work on a SANDBOX implementation in the cloud
-        client = FedLearnApi("uh_idk_what_to_put_here_yet")
+        cloud_gateway_url, api_key = load_env_vars()
+        client = FedLearnApi(cloud_gateway_url, api_key)
 
         with open("tests/data/mnist_cnn.json", "r") as f:
             model_data = json.load(f)
@@ -61,8 +63,12 @@ class IT_GetRoundAggregateModel(unittest.TestCase):
         device = client.register_device(group.get_id())
         device_2 = client.register_device(group.get_id())
         learning_round = client.start_round(group.get_id(), RoundConfiguration("2", "RANDOM"))
-        client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
-        client.submit_model_update(model_data_2, group.get_id(), learning_round.get_id(), device_2.get_id())
+
+        device_client = FedLearnApi(cloud_gateway_url, device.get_api_key())
+        device_client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
+
+        device_client_2 = FedLearnApi(cloud_gateway_url, device_2.get_api_key())
+        device_client_2.submit_model_update(model_data_2, group.get_id(), learning_round.get_id(), device_2.get_id())
 
         # Need to wait for the submit model update to trigger the model_uploaded lambda function
         # And the aggregate models function

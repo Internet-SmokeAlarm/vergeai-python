@@ -6,10 +6,13 @@ from fedlearn import FedLearnApi
 from fedlearn.exceptions import FedLearnApiException
 from fedlearn.models import RoundConfiguration
 
+from .get_env_vars import load_env_vars
+
 class IT_GetGroupCurrentRoundIdTestCase(unittest.TestCase):
 
     def test_pass(self):
-        client = FedLearnApi("doesnt_matter")
+        cloud_gateway_url, api_key = load_env_vars()
+        client = FedLearnApi(cloud_gateway_url, api_key)
 
         group = client.create_group("my_sim_test_group")
         device = client.register_device(group.get_id())
@@ -31,7 +34,8 @@ class IT_GetGroupCurrentRoundIdTestCase(unittest.TestCase):
         client.delete_group(group.get_id())
 
     def test_pass_2(self):
-        client = FedLearnApi("doesnt_matter")
+        cloud_gateway_url, api_key = load_env_vars()
+        client = FedLearnApi(cloud_gateway_url, api_key)
 
         group = client.create_group("my_sim_test_group")
         device = client.register_device(group.get_id())
