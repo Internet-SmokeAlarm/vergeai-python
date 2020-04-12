@@ -17,3 +17,5 @@ from .fedlearn_api_client import UT_FedLearnApiClientTestCase
 from .get_group import UT_GetGroupTestCase
 from .get_round_start_model import UT_GetRoundStartModelTestCase
 from .get_round_start_model_download_link import UT_GetRoundStartModelDownloadLinkTestCase
+
+from .models import *

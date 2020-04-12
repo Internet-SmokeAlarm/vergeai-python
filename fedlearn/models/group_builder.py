@@ -7,9 +7,11 @@ class GroupBuilder(Builder):
         self.name = None
         self.id = None
         self.devices = {}
-        self.rounds = {}
-        self.current_round_id = "N/A"
-        self.is_initial_model_set = False
+        self.round_info = {}
+        self.round_paths = []
+        self.current_round_ids = []
+        self.members = {}
+        self.billing = {}
 
     def set_name(self, name):
         """
@@ -29,30 +31,49 @@ class GroupBuilder(Builder):
         """
         self.devices = devices
 
-    def set_rounds(self, rounds):
+    def set_round_info(self, round_info):
         """
         :param rounds: dict
         """
-        self.rounds = rounds
+        self.round_info = round_info
 
-    def set_current_round_id(self, current_round_id):
+    def set_round_paths(self, round_paths):
         """
-        :param current_round_id: string
+        :param round_paths: list(list(string))
         """
-        self.current_round_id = current_round_id
+        self.round_paths = round_paths
 
-    def set_is_initial_model_set(self, is_initial_model_set):
+    def set_current_round_ids(self, current_round_ids):
         """
-        :param is_initial_model_set: boolean
+        :param current_round_ids: list(string)
         """
-        self.is_initial_model_set = is_initial_model_set
+        self.current_round_ids = current_round_ids
+
+    def set_billing(self, billing):
+        """
+        :param billing: dict
+        """
+        self.billing = billing
+
+    def set_members(self, members):
+        """
+        :param members: dict
+        """
+        self.members = members
 
     def build(self):
-        self._validate_paramaters()
+        self._validate_parameters()
 
-        return Group(self.name, self.id, self.devices, self.rounds, self.current_round_id, self.is_initial_model_set)
+        return Group(self.name,
+                     self.id,
+                     self.devices,
+                     self.round_info,
+                     self.round_paths,
+                     self.current_round_ids,
+                     self.members,
+                     self.billing)
 
-    def _validate_paramaters(self):
+    def _validate_parameters(self):
         if self.id is None:
             raise ValueError("ID must not be none")
         elif type(self.id) is not type("str"):

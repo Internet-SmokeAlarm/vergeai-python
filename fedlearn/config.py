@@ -2,8 +2,6 @@ class FedLearnEndpointConfig:
 
     CREATE_GROUP = "v1/group/create"
     DELETE_GROUP = "v1/group/delete"
-    SUBMIT_GROUP_INITIAL_MODEL = "v1/group/post/initial_model"
-    GET_GROUP_INITIAL_MODEL = "v1/group/get/initial_model/GROUP_ID"
     GET_CURRENT_ROUND_ID = "v1/group/get/current_round_id/GROUP_ID"
 
     START_ROUND = "v1/round/start"

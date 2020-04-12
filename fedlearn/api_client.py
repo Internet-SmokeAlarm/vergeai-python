@@ -168,9 +168,11 @@ class ApiClient:
         builder.set_id(json_data["ID"])
         builder.set_name(json_data["name"])
         builder.set_devices(json_data["devices"])
-        builder.set_current_round_id(json_data["current_round_id"])
-        builder.set_is_initial_model_set(json_data["is_initial_model_set"])
-        builder.set_rounds(json_data["rounds"])
+        builder.set_current_round_ids(json_data["current_round_ids"])
+        builder.set_round_info(json_data["round_info"])
+        builder.set_round_paths(json_data["round_paths"])
+        builder.set_billing(json_data["billing"])
+        builder.set_members(json_data["members"])
 
         return builder.build()
 
