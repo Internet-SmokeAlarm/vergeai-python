@@ -1,4 +1,8 @@
 from .termination_criteria import get_termination_criteria_from_json
+from .termination_criteria import TerminationCriteria
+from .device_selection_strategy import DeviceSelectionStrategy
+
+from ..exceptions import FedLearnApiException
 
 class RoundConfiguration:
 
@@ -10,14 +14,15 @@ class RoundConfiguration:
         """
         :param num_devices: int. Number of devices that must submit models for round completion.
         :param num_buffer_devices: int. Number of additional devices to make active in case of failure to submit.
-        :param device_selection_strategy: string. Device selection strategy. Can be one of:
-            - RANDOM
+        :param device_selection_strategy: DeviceSelectionStrategy. Device selection strategy when running round.
         :param termination_criteria: list(TerminationCriteria). Details the termination criteria for this round.
         """
         self.num_devices = num_devices
         self.num_buffer_devices = num_buffer_devices
         self.device_selection_strategy = device_selection_strategy
         self.termination_criteria = termination_criteria
+
+        self._validate_parameters()
 
     def get_num_devices(self):
         """
@@ -67,9 +72,26 @@ class RoundConfiguration:
         return {
             "num_devices" : str(self.num_devices),
             "num_buffer_devices" : str(self.num_buffer_devices),
-            "device_selection_strategy" : self.device_selection_strategy,
+            "device_selection_strategy" : self.device_selection_strategy.value,
             "termination_criteria" : RoundConfiguration._convert_termination_criteria_to_json(self.termination_criteria)
         }
+
+    def _validate_parameters(self):
+        if type(self.num_devices) != type(5) or self.num_devices <= 0:
+            raise FedLearnApiException("num_devices must be of type int and be > 0.")
+
+        if type(self.num_buffer_devices) != type(5) or self.num_buffer_devices < 0:
+            raise FedLearnApiException("num_buffer_devices must be of type int and be >= 0.")
+
+        if type(self.termination_criteria) != type([]):
+            raise FedLearnApiException("termination_criteria must be an empty list or a list(TerminationCriteria).")
+        else:
+            for criteria in self.termination_criteria:
+                if not issubclass(criteria.__class__, TerminationCriteria):
+                    raise FedLearnApiException("each termination_criteria element must be of type TerminationCriteria.")
+
+        if type(self.device_selection_strategy) != DeviceSelectionStrategy:
+            raise FedLearnApiException("device_selection_strategy must be of type DeviceSelectionStrategy.")
 
     @staticmethod
     def from_json(json_data):
@@ -78,7 +100,7 @@ class RoundConfiguration:
         """
         return RoundConfiguration(int(json_data["num_devices"]),
                                   int(json_data["num_buffer_devices"]),
-                                  json_data["device_selection_strategy"],
+                                  DeviceSelectionStrategy(json_data["device_selection_strategy"]),
                                   RoundConfiguration._load_termination_criteria_from_json(json_data["termination_criteria"]))
 
     @staticmethod

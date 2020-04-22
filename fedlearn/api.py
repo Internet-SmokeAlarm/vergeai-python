@@ -45,52 +45,34 @@ class FedLearnApi:
 
         return self.api_client.submit_model_update(model_json, group_id, round_id, device_id)
 
-    def get_group_initial_model_submit_link(self, group_id):
+    def get_round_start_model_submit_link(self, group_id, round_id):
         """
-        Get the link information to submit the initial model for a Federated Learning group.
+        Get the link information to submit the start model for a Federated Learning round.
 
         :param group_id: string. ID of group
+        :param round_id: string. ID of round
         :return: dict. URL data
         """
         self._validate_group_id(group_id)
+        self._validate_round_id(round_id)
 
-        return self.api_client.get_group_initial_model_submit_link(group_id)
+        return self.api_client.get_round_start_model_submit_link(group_id, round_id)
 
-    def submit_group_initial_model(self, model_json, group_id):
+    def submit_round_start_model(self, model_json, group_id, round_id):
         """
-        Submit the initial model for a Federated Learning group.
+        Submit the start model for a Federated Learning round.
 
         :param model_json: json. Should conform to the model json data standard, must be serializable
         :param group_id: string. ID of group
+        :param round_id: string. ID of the round. Note: this round must not have a previous round.
         :return: boolean. True if successful
         """
         self._validate_model_json(model_json)
         self._validate_group_id(group_id)
+        self._validate_round_id(round_id)
         self._validate_model_json(model_json)
 
-        return self.api_client.submit_group_initial_model(model_json, group_id)
-
-    def get_group_initial_model_download_link(self, group_id):
-        """
-        Get the download link for the initial group model.
-
-        :param group_id: string. ID of group
-        :return: dict. URL data
-        """
-        self._validate_group_id(group_id)
-
-        return self.api_client.get_group_initial_model_download_link(group_id)
-
-    def get_group_initial_model(self, group_id):
-        """
-        Run the get_group_initial_model_download_link() function, then download the initial model.
-
-        :param group_id: string. ID of group
-        :return: json
-        """
-        self._validate_group_id(group_id)
-
-        return self.api_client.get_group_initial_model(group_id)
+        return self.api_client.submit_round_start_model(model_json, group_id, round_id)
 
     def get_round_start_model_download_link(self, group_id, round_id):
         """
@@ -172,16 +154,16 @@ class FedLearnApi:
 
         return self.api_client.delete_group(group_id)
 
-    def get_group_current_round_id(self, group_id):
+    def get_group_current_round_ids(self, group_id):
         """
-        Gets the current round ID associated with a Federated Learning group.
+        Gets the current round IDs associated with a Federated Learning group.
 
         :param group_id: string. ID of the group
-        :return: string
+        :return: list(string)
         """
         self._validate_group_id(group_id)
 
-        return self.api_client.get_group_current_round_id(group_id)
+        return self.api_client.get_group_current_round_ids(group_id)
 
     def start_round(self, group_id, round_configuration):
         """
@@ -284,9 +266,6 @@ class FedLearnApi:
         """
         if round_configuration is None or type(round_configuration) is not RoundConfiguration:
             raise FedLearnApiException("round configuration must be type RoundConfiguration")
-        else:
-            self._validate_string_parameter(round_configuration.get_num_devices(), "num devices")
-            self._validate_string_parameter(round_configuration.get_device_selection_strategy(), "device selection strategy")
 
     def _validate_model_json(self, model_json):
         """
