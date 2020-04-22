@@ -70,8 +70,8 @@ class RoundConfiguration:
 
     def to_json(self):
         return {
-            "num_devices" : str(self.num_devices),
-            "num_buffer_devices" : str(self.num_buffer_devices),
+            "num_devices" : self.num_devices,
+            "num_buffer_devices" : self.num_buffer_devices,
             "device_selection_strategy" : self.device_selection_strategy.value,
             "termination_criteria" : RoundConfiguration._convert_termination_criteria_to_json(self.termination_criteria)
         }

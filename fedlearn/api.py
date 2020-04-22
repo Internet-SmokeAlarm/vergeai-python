@@ -165,18 +165,20 @@ class FedLearnApi:
 
         return self.api_client.get_group_current_round_ids(group_id)
 
-    def start_round(self, group_id, round_configuration):
+    def start_round(self, group_id, previous_round_id, round_configuration):
         """
         Start a new learning round. Requires round settings to be passed.
 
         :param group_id: string. Group ID
+        :param previous_round_id: string. Previous round ID. Should be None if starting a new path.
         :param round_configuration: RoundConfiguration
-        :returns: A Round
+        :returns: string. Round ID
         """
         self._validate_group_id(group_id)
+        self._validate_string_parameter(previous_round_id, "previous_round_id")
         self._validate_round_configuration(round_configuration)
 
-        return self.api_client.start_round(group_id, round_configuration)
+        return self.api_client.start_round(group_id, previous_round_id, round_configuration)
 
     def is_device_active(self, group_id, round_id, device_id):
         """
