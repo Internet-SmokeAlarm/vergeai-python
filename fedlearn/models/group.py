@@ -72,3 +72,26 @@ class Group:
         :return: dict
         """
         return self.billing
+
+    def to_json(self):
+        return {
+            "name" : self.name,
+            "ID" : self.id,
+            "devices" : self.devices,
+            "round_info" : self.round_info,
+            "round_paths" : self.round_paths,
+            "current_round_ids" : self.current_round_ids,
+            "members" : self.members,
+            "billing" : self.billing
+        }
+
+    @staticmethod
+    def from_json(json_data):
+        return Group(json_data["name"],
+                     json_data["ID"],
+                     json_data["devices"],
+                     json_data["round_info"],
+                     json_data["round_paths"],
+                     json_data["current_round_ids"],
+                     json_data["members"],
+                     json_data["billing"])
