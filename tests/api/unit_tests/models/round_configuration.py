@@ -2,11 +2,13 @@ import unittest
 
 from fedlearn.models import RoundConfiguration
 from fedlearn.models.termination_criteria import DurationTerminationCriteria
+from fedlearn.exceptions import FedLearnApiException
+from fedlearn.models import DeviceSelectionStrategy
 
 class RoundConfigurationTestCase(unittest.TestCase):
 
     def test_to_json_pass(self):
-        config = RoundConfiguration(5, 0, "RANDOM", [DurationTerminationCriteria(100, 1231231.2342)])
+        config = RoundConfiguration(5, 0, DeviceSelectionStrategy.RANDOM, [DurationTerminationCriteria(100, 1231231.2342)])
 
         json_data = {
             'num_devices': '5',
@@ -82,3 +84,33 @@ class RoundConfigurationTestCase(unittest.TestCase):
         self.assertEqual(len(converted_criteria), 1)
         self.assertEqual(converted_criteria[0].get_max_duration_sec(), 123)
         self.assertEqual(converted_criteria[0].get_start_epoch_time(), 1231231.23342)
+
+    def test_construction_fail_1(self):
+        self.assertRaises(FedLearnApiException, RoundConfiguration, None, 0, DeviceSelectionStrategy.RANDOM, [])
+
+    def test_construction_fail_2(self):
+        self.assertRaises(FedLearnApiException, RoundConfiguration, "None", 0, DeviceSelectionStrategy.RANDOM, [])
+
+    def test_construction_fail_3(self):
+        self.assertRaises(FedLearnApiException, RoundConfiguration, 5, "0", DeviceSelectionStrategy.RANDOM, [])
+
+    def test_construction_fail_4(self):
+        self.assertRaises(FedLearnApiException, RoundConfiguration, 5, 0, "NONE", [])
+
+    def test_construction_fail_5(self):
+        self.assertRaises(FedLearnApiException, RoundConfiguration, 5, 0, DeviceSelectionStrategy.RANDOM, None)
+
+    def test_construction_fail_6(self):
+        self.assertRaises(FedLearnApiException, RoundConfiguration, 5, 0, None, [])
+
+    def test_construction_fail_7(self):
+        self.assertRaises(FedLearnApiException, RoundConfiguration, -1, 0, DeviceSelectionStrategy.RANDOM, [])
+
+    def test_construction_fail_8(self):
+        self.assertRaises(FedLearnApiException, RoundConfiguration, 0, 0, DeviceSelectionStrategy.RANDOM, [])
+
+    def test_construction_fail_9(self):
+        self.assertRaises(FedLearnApiException, RoundConfiguration, 1, -1, DeviceSelectionStrategy.RANDOM, [])
+
+    def test_construction_fail_10(self):
+        self.assertRaises(FedLearnApiException, RoundConfiguration, 1, 0, DeviceSelectionStrategy.RANDOM, [None])
