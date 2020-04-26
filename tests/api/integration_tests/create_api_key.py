@@ -2,8 +2,6 @@ from .base import BaseTest
 from fedlearn import FedLearnApi
 from fedlearn.exceptions import FedLearnApiException
 
-from .get_env_vars import load_env_vars
-
 class IT_CreateApiKeyTestCase(BaseTest):
 
     def test_pass(self):

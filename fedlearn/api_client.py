@@ -267,6 +267,19 @@ class ApiClient:
 
         return response.json()["key"]
 
+    def cancel_round(self, round_id):
+        """
+        Cancel a specified round.
+
+        :param round_id: string
+        """
+        data = {"round_id" : round_id}
+        response = self._post(FedLearnEndpointConfig.CANCEL_ROUND, data)
+
+        self._validate_response(response)
+
+        return True
+
     def _post(self, url, json):
         """
         :param url: string

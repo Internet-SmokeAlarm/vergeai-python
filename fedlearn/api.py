@@ -230,6 +230,17 @@ class FedLearnApi:
         """
         return self.api_client.create_api_key()
 
+    def cancel_round(self, round_id):
+        """
+        Cancels the specified learning round, regardless of current state.
+
+        :param round_id: string
+        :return: boolean
+        """
+        self._validate_round_id(round_id)
+
+        return self.api_client.cancel_round(round_id)
+
     def _validate_round_id(self, round_id):
         """
         :param round_id: string

@@ -15,3 +15,4 @@ from .get_round_aggregate_model import IT_GetRoundAggregateModel
 from .get_round_start_model import IT_GetRoundStartModelTestCase
 from .get_round_start_model_download_link import IT_GetRoundStartModelDownloadLinkTestCase
 from .submit_round_start_model import IT_SubmitRoundStartModelTestCase
+from .cancel_round import IT_CancelRoundTestCase
