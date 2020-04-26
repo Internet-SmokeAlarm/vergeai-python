@@ -4,6 +4,18 @@ from fedlearn.models.termination_criteria import DurationTerminationCriteria
 
 class DurationTerminationCriteriaTestCase(unittest.TestCase):
 
+    def test_construction_fail_1(self):
+        self.assertRaises(ValueError, DurationTerminationCriteria, -1)
+
+    def test_construction_fail_2(self):
+        self.assertRaises(ValueError, DurationTerminationCriteria, 0)
+
+    def test_construction_fail_3(self):
+        self.assertRaises(ValueError, DurationTerminationCriteria, None)
+
+    def test_construction_fail_4(self):
+        self.assertRaises(ValueError, DurationTerminationCriteria, "hello world")
+
     def test_from_json_pass(self):
         criteria_json = {
             "type" : "DurationTerminationCriteria",

@@ -8,6 +8,7 @@ class FedLearnEndpointConfig:
     GET_ROUND = "v1/round/get/GROUP_ID/ROUND_ID"
     GET_ROUND_AGGREGATE_MODEL = "v1/round/get/aggregate_model/GROUP_ID/ROUND_ID"
     GET_ROUND_START_MODEL = "v1/round/get/start_model/GROUP_ID/ROUND_ID"
+    SUBMIT_ROUND_START_MODEL = "v1/round/submit_start_model"
 
     REGISTER_DEVICE = "v1/device/register"
     SUBMIT_MODEL_UPDATE = "v1/submit_model_update"
