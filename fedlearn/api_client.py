@@ -5,6 +5,7 @@ from .exceptions import FedLearnApiException
 from .exceptions import FedLearnException
 
 from .models import GroupBuilder
+from .models import Group
 from .models import Round
 from .models import Device
 from .models import RoundStatus
@@ -69,55 +70,32 @@ class ApiClient:
 
         return True
 
-    def get_group_initial_model_submit_link(self, group_id):
+    def get_round_start_model_submit_link(self, group_id, round_id):
         """
         :param group_id: string
+        :param round_id: string
         :return: json. Dictionary that contains information necessary to submit model
         """
-        data = {"group_id" : group_id}
-        response = self._post(FedLearnEndpointConfig.SUBMIT_GROUP_INITIAL_MODEL, data)
+        data = {"group_id" : group_id, "round_id" : round_id}
+        response = self._post(FedLearnEndpointConfig.SUBMIT_ROUND_START_MODEL, data)
 
         self._validate_response(response)
 
         return response.json()
 
-    def submit_group_initial_model(self, model_json, group_id):
+    def submit_round_start_model(self, model_json, group_id, round_id):
         """
         :param model_json: json
         :param group_id: string
+        :param round_id: string
         """
-        upload_link_info = self.get_group_initial_model_submit_link(group_id)
+        upload_link_info = self.get_round_start_model_submit_link(group_id, round_id)
 
         response = upload_data_to_s3_helper(model_json, upload_link_info)
 
         self._validate_response(response)
 
         return True
-
-    def get_group_initial_model_download_link(self, group_id):
-        """
-        :param group_id: string
-        """
-        data = {"GROUP_ID" : group_id}
-        url = self._assemble_url(FedLearnEndpointConfig.GET_GROUP_INITIAL_MODEL, data)
-
-        response = self._get(url)
-
-        self._validate_response(response)
-
-        return response.json()
-
-    def get_group_initial_model(self, group_id):
-        """
-        :param group_id: string
-        """
-        url_info = self.get_group_initial_model_download_link(group_id)
-
-        response = download_model_from_s3_helper(url_info)
-
-        self._validate_response(response)
-
-        return response.json()
 
     def get_round(self, group_id, round_id):
         """
@@ -130,11 +108,7 @@ class ApiClient:
 
         self._validate_response(response)
 
-        id = response.json()["ID"]
-        status = RoundStatus(response.json()["status"])
-        previous_round_id = response.json()["previous_round_id"]
-
-        return Round(id, status, previous_round_id)
+        return Round.from_json(response.json())
 
     def create_group(self, group_name):
         """
@@ -163,16 +137,7 @@ class ApiClient:
 
         self._validate_response(response)
 
-        json_data = response.json()
-        builder = GroupBuilder()
-        builder.set_id(json_data["ID"])
-        builder.set_name(json_data["name"])
-        builder.set_devices(json_data["devices"])
-        builder.set_current_round_id(json_data["current_round_id"])
-        builder.set_is_initial_model_set(json_data["is_initial_model_set"])
-        builder.set_rounds(json_data["rounds"])
-
-        return builder.build()
+        return Group.from_json(response.json())
 
     def delete_group(self, group_id):
         """
@@ -186,22 +151,24 @@ class ApiClient:
 
         return True
 
-    def start_round(self, group_id, round_configuration):
+    def start_round(self, group_id, previous_round_id, round_configuration):
         """
         :param group_id: string
+        :param previous_round_id: string
         :param round_configuration: RoundConfiguration
-        :return: Round
+        :return: string. Round ID
         """
         data = {
             "group_id" : group_id,
-            "num_devices" : round_configuration.get_num_devices(),
-            "device_selection_strategy" : round_configuration.get_device_selection_strategy()
+            "previous_round_id" : previous_round_id
         }
+        data.update(round_configuration.to_json())
+
         response = self._post(FedLearnEndpointConfig.START_ROUND, data)
 
         self._validate_response(response)
 
-        return Round(response.json()["round_id"], RoundStatus.IN_PROGRESS, None)
+        return response.json()["round_id"]
 
     def is_device_active(self, group_id, round_id, device_id):
         """
@@ -243,10 +210,10 @@ class ApiClient:
 
         return response.json()
 
-    def get_group_current_round_id(self, group_id):
+    def get_group_current_round_ids(self, group_id):
         """
         :param group_id: string
-        :return: string
+        :return: list(string)
         """
         data = {"GROUP_ID" : group_id}
         url = self._assemble_url(FedLearnEndpointConfig.GET_CURRENT_ROUND_ID, data)
@@ -254,7 +221,7 @@ class ApiClient:
 
         self._validate_response(response)
 
-        return response.json()["round_id"]
+        return response.json()["round_ids"]
 
     def get_round_aggregate_model_download_link(self, group_id, round_id):
         """
@@ -299,6 +266,19 @@ class ApiClient:
         self._validate_response(response)
 
         return response.json()["key"]
+
+    def cancel_round(self, round_id):
+        """
+        Cancel a specified round.
+
+        :param round_id: string
+        """
+        data = {"round_id" : round_id}
+        response = self._post(FedLearnEndpointConfig.CANCEL_ROUND, data)
+
+        self._validate_response(response)
+
+        return True
 
     def _post(self, url, json):
         """

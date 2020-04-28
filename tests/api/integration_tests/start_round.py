@@ -1,31 +1,38 @@
-import unittest
-import json
+from .base import BaseTest
 from time import sleep
 
 from fedlearn.models import RoundConfiguration
-from fedlearn import FedLearnApi
+from fedlearn.models import DeviceSelectionStrategy
+from fedlearn.models.termination_criteria import DurationTerminationCriteria
 from fedlearn.exceptions import FedLearnApiException
 
-from .get_env_vars import load_env_vars
+class IT_StartRoundTestCase(BaseTest):
 
-class IT_StartRoundTestCase(unittest.TestCase):
+    def test_pass_simple(self):
+        group = self.client.create_group("sim_test_group")
 
-    def test_pass(self):
-        cloud_gateway_url, api_key = load_env_vars()
-        client = FedLearnApi(cloud_gateway_url, api_key)
-        group = client.create_group("sim_test_group")
-        device = client.register_device(group.get_id())
+        device = self.client.register_device(group.get_id())
+        learning_round_id = self.client.start_round(group.get_id(), "", RoundConfiguration(1, 0, DeviceSelectionStrategy.RANDOM, []))
 
-        with open("tests/data/mnist_cnn.json", "r") as f:
-            model_data = json.load(f)
-        client.submit_group_initial_model(model_data, group.get_id())
+        self.assertIsNotNone(learning_round_id)
 
-        while not client.get_group(group.get_id()).is_initial_model_set():
-            sleep(1)
-        sleep(1)
+        self.client.delete_group(group.get_id())
 
-        learning_round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
+    def test_pass_complex(self):
+        group = self.client.create_group("sim_test_group")
 
-        self.assertIsNotNone(learning_round.get_id())
+        device = self.client.register_device(group.get_id())
+        learning_round_id = self.client.start_round(group.get_id(),
+                                                    "",
+                                                    RoundConfiguration(1, 0, DeviceSelectionStrategy.RANDOM, []))
+        learning_round_id_2 = self.client.start_round(group.get_id(),
+                                                      learning_round_id,
+                                                      RoundConfiguration(1, 0, DeviceSelectionStrategy.RANDOM, [
+                                                            DurationTerminationCriteria(100),
+                                                            DurationTerminationCriteria(250)
+                                                      ]))
 
-        client.delete_group(group.get_id())
+        self.assertIsNotNone(learning_round_id)
+        self.assertIsNotNone(learning_round_id_2)
+
+        self.client.delete_group(group.get_id())

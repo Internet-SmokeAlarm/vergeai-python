@@ -1,6 +1,7 @@
 import unittest
 
 from fedlearn.models import RoundConfiguration
+from fedlearn.models import DeviceSelectionStrategy
 from fedlearn import FedLearnApi
 from fedlearn.exceptions import FedLearnApiException
 
@@ -129,24 +130,14 @@ class UT_FedLearnApiTestCase(unittest.TestCase):
     def test_validate_round_configuration_pass(self):
         client = FedLearnApi("gateway_url", "uh_idk_what_to_put_here_yet")
 
-        client._validate_round_configuration(RoundConfiguration("50", "RANDOM"))
+        client._validate_round_configuration(RoundConfiguration(50, 0, DeviceSelectionStrategy.RANDOM, []))
 
     def test_validate_round_configuration_fail(self):
         client = FedLearnApi("gateway_url", "uh_idk_what_to_put_here_yet")
 
-        self.assertRaises(FedLearnApiException, client._validate_round_configuration, RoundConfiguration(None, "RANDOM"))
+        self.assertRaises(FedLearnApiException, client._validate_round_configuration, None)
 
     def test_validate_round_configuration_fail_2(self):
         client = FedLearnApi("gateway_url", "uh_idk_what_to_put_here_yet")
 
-        self.assertRaises(FedLearnApiException, client._validate_round_configuration, RoundConfiguration(12131, "RANDOM"))
-
-    def test_validate_round_configuration_fail_3(self):
-        client = FedLearnApi("gateway_url", "uh_idk_what_to_put_here_yet")
-
-        self.assertRaises(FedLearnApiException, client._validate_round_configuration, RoundConfiguration("50", None))
-
-    def test_validate_round_configuration_fail_4(self):
-        client = FedLearnApi("gateway_url", "uh_idk_what_to_put_here_yet")
-
-        self.assertRaises(FedLearnApiException, client._validate_round_configuration, RoundConfiguration("50", {}))
+        self.assertRaises(FedLearnApiException, client._validate_round_configuration, 10)

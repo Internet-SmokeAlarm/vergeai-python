@@ -10,5 +10,5 @@ export CLOUD_GATEWAY_URL=$CLOUD_GATEWAY_URL
 export DEV_AUTH_TABLE=$DEV_AUTH_TABLE
 export API_KEY=$API_KEY
 
-python publish_test_auth_keys.py
-python -m unittest tests.api.integration_tests
+python3 publish_test_auth_keys.py
+python3 -m unittest tests.api.integration_tests

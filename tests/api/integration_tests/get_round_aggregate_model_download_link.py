@@ -1,73 +1,62 @@
-import unittest
+from .base import BaseTest
 import json
 from time import sleep
 
-from fedlearn import FedLearnApi
+from fedlearn.models import DeviceSelectionStrategy
 from fedlearn.models import RoundConfiguration
 from fedlearn.exceptions import FedLearnApiException
+from fedlearn import FedLearnApi
 from fedlearn.exceptions import FedLearnException
 
-from .get_env_vars import load_env_vars
-
-class IT_GetRoundAggregateModelDownloadLinkTestCase(unittest.TestCase):
+class IT_GetRoundAggregateModelDownloadLinkTestCase(BaseTest):
 
     def test_pass(self):
-        cloud_gateway_url, api_key = load_env_vars()
-        client = FedLearnApi(cloud_gateway_url, api_key)
-
         with open("tests/data/mnist_cnn.json", "r") as f:
             model_data = json.load(f)
 
-        group = client.create_group("sim_test_group")
-        client.submit_group_initial_model(model_data, group.get_id())
+        group = self.client.create_group("sim_test_group")
+        device = self.client.register_device(group.get_id())
 
-        while not client.get_group(group.get_id()).is_initial_model_set():
-            sleep(1)
-        sleep(1)
+        round_id = self.client.start_round(group.get_id(), "", RoundConfiguration(1, 0, DeviceSelectionStrategy.RANDOM, []))
+        self.client.submit_round_start_model(model_data, group.get_id(), round_id)
 
-        device = client.register_device(group.get_id())
-        learning_round = client.start_round(group.get_id(), RoundConfiguration("1", "RANDOM"))
+        sleep(4)
 
-        device_client = FedLearnApi(cloud_gateway_url, device.get_api_key())
-        device_client.submit_model_update(model_data, group.get_id(), learning_round.get_id(), device.get_id())
+        device_client = FedLearnApi(self.cloud_gateway_url, device.get_api_key())
+        device_client.submit_model_update(model_data, group.get_id(), round_id, device.get_id())
 
         # Need to wait for the submit model update to trigger the model_uploaded lambda function
         # And the aggregate models function
-        while not client.get_round(group.get_id(), learning_round.get_id()).is_completed():
+        while not self.client.get_round(group.get_id(), round_id).is_complete():
             sleep(1)
-        sleep(1)
 
-        url_data = client.get_round_aggregate_model_download_link(group.get_id(), learning_round.get_id())
+        url_data = self.client.get_round_aggregate_model_download_link(group.get_id(), round_id)
 
         self.assertTrue("model_url" in url_data)
+        self.assertTrue(round_id in url_data["model_url"])
+        self.assertTrue("aggregate_model" in url_data["model_url"])
 
-        client.delete_group(group.get_id())
+        self.client.delete_group(group.get_id())
 
     def test_fail_round_incomplete(self):
-        cloud_gateway_url, api_key = load_env_vars()
-        client = FedLearnApi(cloud_gateway_url, api_key)
-        group = client.create_group("the_expanse_is_awesome")
+        group = self.client.create_group("the_expanse_is_awesome")
+        device = self.client.register_device(group.get_id())
 
         with open("tests/data/mnist_cnn.json", "r") as f:
             model_data = json.load(f)
-        client.submit_group_initial_model(model_data, group.get_id())
 
-        while not client.get_group(group.get_id()).is_initial_model_set():
-            sleep(1)
-        sleep(1)
+        round_id = self.client.start_round(group.get_id(), "", RoundConfiguration(1, 0, DeviceSelectionStrategy.RANDOM, []))
+        self.client.submit_round_start_model(model_data, group.get_id(), round_id)
 
-        round_config = RoundConfiguration("0", "RANDOM")
-        round = client.start_round(group.get_id(), round_config)
+        sleep(4)
 
-        self.assertRaises(FedLearnApiException, client.get_round_aggregate_model_download_link, group.get_id(), round.get_id())
+        self.assertRaises(FedLearnApiException, self.client.get_round_aggregate_model_download_link, group.get_id(), round_id)
 
-        client.delete_group(group.get_id())
+        self.client.delete_group(group.get_id())
 
     def test_fail_round_nonexistant(self):
-        cloud_gateway_url, api_key = load_env_vars()
-        client = FedLearnApi(cloud_gateway_url, api_key)
-        group = client.create_group("the_expanse_is_awesome")
+        group = self.client.create_group("the_expanse_is_awesome")
 
-        self.assertRaises(FedLearnApiException, client.get_round_aggregate_model_download_link, group.get_id(), "213123")
+        self.assertRaises(FedLearnApiException, self.client.get_round_aggregate_model_download_link, group.get_id(), "213123")
 
-        client.delete_group(group.get_id())
+        self.client.delete_group(group.get_id())
