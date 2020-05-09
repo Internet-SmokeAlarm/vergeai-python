@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python -m unittest tests.api.unit_tests
+python3 -m unittest tests.api_resources.unit_tests

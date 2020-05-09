@@ -1,17 +1,16 @@
 from setuptools import setup, find_packages
 
 setup(
-    name = 'fedlearn-sdk',
-    url = "https://internetsmokealarm.com",
-    author = "ISA Systems, LLC",
-    author_email = "valetolpegin@internetsmokealarm.com",
-    version = "0.0.2",
-    maintainer = "ISA Systems, LLC",
-    maintainer_email = "valetolpegin@internetsmokealarm.com",
+    name = 'vergeai',
+    url = "https://master.d23pjv5h2c4648.amplifyapp.com/",
+    author = "Vale Tolpegin",
+    author_email = "valetolpegin@gmail.com",
+    version = "1.0",
+    maintainer = "Vale Tolpegin",
+    maintainer_email = "valetolpegin@gmail.com",
     packages = find_packages(exclude = ('tests', 'doc')),
     install_requires = [
         'requests==2.22.0',
-        "torch==1.3.1",
         "numpy==1.18.0"],
     classifiers=[
         'Development Status :: 4 - Beta',
