@@ -1,2 +1,4 @@
-def convert_to_vergeai_object(response, api_key, gateway, api_version):
-    return "TODO"
+from ...api_response import APIResponse
+
+def convert_to_vergeai_object(status_code, json_data):
+    return APIResponse(status_code, json_data)
