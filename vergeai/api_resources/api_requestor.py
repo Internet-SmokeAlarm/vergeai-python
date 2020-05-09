@@ -5,6 +5,9 @@ from .utils import download_model_from_s3_helper
 from .utils import url_builder
 from .utils import assemble_headers
 
+from ..logging import log_info
+from ..logging import log_debug
+
 class APIRequestor:
 
     def __init__(self, api_key=None, api_version=None, gateway=None):
@@ -26,18 +29,18 @@ class APIRequestor:
         :param action: string
         :param parameters: dict
         """
-        print("API Request Captured")
-        print("Method: " + method)
-        print("URL: " + url)
-        print("Action: " + action)
-        print("Params: " + str(parameters))
+        log_info("API Request Captured")
+        log_debug("Method: " + method)
+        log_debug("URL: " + url)
+        log_debug("Action: " + action)
+        log_debug("Params: " + str(parameters))
 
         if method == "post":
             response = self._request_post(url, action, parameters)
         elif method == "get":
             response = self._request_get(url, action, parameters)
 
-        print("Response: " + str(response))
+        log_debug("Response: " + str(response))
 
         return response
 

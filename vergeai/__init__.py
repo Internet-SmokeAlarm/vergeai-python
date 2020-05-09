@@ -1,3 +1,6 @@
+from .logging import *
+initialize_logger("WARNING")
+
 from .default_gateways import DefaultGateways
 from .clients import *
 
