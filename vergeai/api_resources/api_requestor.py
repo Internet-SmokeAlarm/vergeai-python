@@ -4,7 +4,6 @@ from .utils import upload_data_to_s3_helper
 from .utils import download_model_from_s3_helper
 from .utils import url_builder
 from .utils import assemble_headers
-from .utils import convert_to_vergeai_object
 
 class APIRequestor:
 

@@ -1,5 +1,4 @@
 from .. import APIRequestor
-from ..utils import convert_to_vergeai_object
 
 class CreateableAPIResource:
 
@@ -16,6 +15,4 @@ class CreateableAPIResource:
             gateway=gateway)
         url = cls.class_url()
 
-        response = requestor.request("post", url, "create", parameters)
-
-        return convert_to_vergeai_object(response, api_key, gateway, api_version)
+        return requestor.request("post", url, "create", parameters)

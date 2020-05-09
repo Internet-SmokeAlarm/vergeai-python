@@ -1,5 +1,5 @@
 from .abstract_client import AbstractClient
-from ..api_resources.utils import convert_to_vergeai_object
+from .object_conversion import convert_to_vergeai_object
 
 class DummyClient(AbstractClient):
 

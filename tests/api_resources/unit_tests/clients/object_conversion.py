@@ -1,6 +1,6 @@
 import unittest
 
-from vergeai.api_resources.utils import convert_to_vergeai_object
+from vergeai.clients import convert_to_vergeai_object
 
 class UT_ObjectConversionTestCase(unittest.TestCase):
 
