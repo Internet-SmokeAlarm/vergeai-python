@@ -1,2 +1,2 @@
 from .abstract_resource import AbstractAPIResource
-from .creatable import CreateableAPIResource
+from .abstract_type import AbstractType

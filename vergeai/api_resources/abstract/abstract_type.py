@@ -1,10 +1,11 @@
 from .. import APIRequestor
 
-class CreateableAPIResource:
+class AbstractType:
 
-    @classmethod
-    def create(cls, api_key=None, api_version=None, gateway=None, **parameters):
+    @staticmethod
+    def _simple_request(cls, action, api_key=None, api_version=None, gateway=None, **parameters):
         """
+        :param action: string
         :param api_key: string
         :param api_version: string
         :param gateway:string
@@ -15,4 +16,4 @@ class CreateableAPIResource:
             gateway=gateway)
         url = cls.class_url()
 
-        return requestor.request("post", url, "create", parameters)
+        return requestor.request("post", url, action, parameters)
