@@ -3,7 +3,7 @@ def url_builder(gateway, version, url, action, parameters):
     :param gateway: string
     :param version: string
     :param url: string
-    :param action:
+    :param action: string
     :param parameters: dict
     """
     base_url = gateway + "/" + version + "/" + url + "/" + action
