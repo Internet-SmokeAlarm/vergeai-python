@@ -10,4 +10,4 @@ class CreatableAPIResource(AbstractType):
         :param api_version: string
         :param gateway:string
         """
-        return CreatableAPIResource._simple_request(cls, "create", api_key, api_version, gateway, **parameters)
+        return CreatableAPIResource._simple_request(cls, "post", "create", api_key, api_version, gateway, **parameters)

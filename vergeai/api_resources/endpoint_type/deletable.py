@@ -10,4 +10,4 @@ class DeletableAPIResource(AbstractType):
         :param api_version: string
         :param gateway:string
         """
-        return DeletableAPIResource._simple_request(cls, "delete", api_key, api_version, gateway, **parameters)
+        return DeletableAPIResource._simple_request(cls, "post", "delete", api_key, api_version, gateway, **parameters)

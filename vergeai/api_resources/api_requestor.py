@@ -1,7 +1,5 @@
 import vergeai
 
-from .utils import upload_data_to_s3_helper
-from .utils import download_model_from_s3_helper
 from .utils import url_builder
 from .utils import assemble_headers
 
@@ -30,17 +28,17 @@ class APIRequestor:
         :param parameters: dict
         """
         log_info("API Request Captured")
-        log_debug("Method: " + method)
-        log_debug("URL: " + url)
-        log_debug("Action: " + action)
-        log_debug("Params: " + str(parameters))
+        log_debug("Method: {}".format(method))
+        log_debug("URL: {}".format(url))
+        log_debug("Action: {}".format(action))
+        log_debug("Params: {}".format(str(parameters)))
 
         if method == "post":
             response = self._request_post(url, action, parameters)
         elif method == "get":
             response = self._request_get(url, action, parameters)
 
-        log_debug("Response: " + str(response))
+        log_debug("Response: {}".format(str(response)))
 
         return response
 
@@ -48,10 +46,14 @@ class APIRequestor:
         headers = assemble_headers(self.api_key)
         complete_url = url_builder(self.gateway, self.api_version, url, action, {})
 
+        log_debug("Assembled URL: {}".format(complete_url))
+
         return self.client.post(headers, complete_url, data=parameters)
 
     def _request_get(self, url, action, parameters):
         headers = assemble_headers(self.api_key)
         complete_url = url_builder(self.gateway, self.api_version, url, action, parameters)
+
+        log_debug("Assembled URL: {}".format(complete_url))
 
         return self.client.get(headers, complete_url)

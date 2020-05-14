@@ -10,4 +10,4 @@ class CancelableAPIResource(AbstractType):
         :param api_version: string
         :param gateway:string
         """
-        return CancelableAPIResource._simple_request(cls, "cancel", api_key, api_version, gateway, **parameters)
+        return CancelableAPIResource._simple_request(cls, "post", "cancel", api_key, api_version, gateway, **parameters)

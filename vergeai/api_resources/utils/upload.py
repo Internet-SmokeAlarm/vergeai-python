@@ -1,8 +1,9 @@
 import requests
 import json
 from tempfile import NamedTemporaryFile
+from ...clients import convert_to_vergeai_object
 
-def upload_data_to_s3_helper(data, url_info):
+def upload_model_to_s3_helper(data, url_info):
     """
     :param data: serializable object
     :param url_info: json
@@ -19,6 +20,6 @@ def upload_data_to_s3_helper(data, url_info):
                 data=url_info["model_url"]["fields"],
                 files={"file" : (url_info["model_url"]["fields"]["key"], f)})
 
-        return response
+        return convert_to_vergeai_object(response.status_code, {})
     finally:
         model_file.close()

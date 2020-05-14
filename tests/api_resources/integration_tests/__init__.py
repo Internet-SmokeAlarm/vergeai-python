@@ -1,2 +1,1 @@
-from .group import GroupTestCase
-from .round import RoundTestCase
+from .api_resources import *

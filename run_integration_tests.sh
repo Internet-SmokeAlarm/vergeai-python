@@ -10,4 +10,5 @@ export DEV_AUTH_TABLE=$DEV_AUTH_TABLE
 export API_KEY=$API_KEY
 
 python3 tests/publish_test_auth_keys.py
-python3 -m unittest tests.api_resources.integration_tests
+python3 -m unittest tests.api_resources.integration_tests.api_resources.round
+#python3 -m unittest tests.api_resources.integration_tests.api_resources.device
