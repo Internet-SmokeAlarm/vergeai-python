@@ -27,7 +27,7 @@ class IT_GroupTestCase(AbstractTestCase):
 
         vergeai.Group.delete(group_id=group_id)
 
-    def test_get_current_round_ids_pass(self):
+    def test_get_active_rounds_pass(self):
         vergeai.api_key = self.api_key
 
         group_id = vergeai.Group.create(group_name="my_name").data["group_id"]
@@ -42,15 +42,15 @@ class IT_GroupTestCase(AbstractTestCase):
             num_buffer_devices=0,
             termination_criteria=[]).data["round_id"]
 
-        response = vergeai.Group.current_round_ids(group_id=group_id)
-        current_round_ids = response.data["round_ids"]
+        response = vergeai.Group.active_rounds(group_id=group_id)
+        active_rounds = response.data["round_ids"]
 
-        self.assertTrue(round_id in current_round_ids)
-        self.assertEqual(len(current_round_ids), 1)
+        self.assertTrue(round_id in active_rounds)
+        self.assertEqual(len(active_rounds), 1)
 
         vergeai.Group.delete(group_id)
 
-    def test_get_current_round_ids_pass_2(self):
+    def test_get_active_rounds_pass_2(self):
         vergeai.api_key = self.api_key
 
         group_id = vergeai.Group.create(group_name="my_name").data["group_id"]
@@ -81,25 +81,25 @@ class IT_GroupTestCase(AbstractTestCase):
             num_buffer_devices=0,
             termination_criteria=[]).data["round_id"]
 
-        response = vergeai.Group.current_round_ids(group_id=group_id)
-        current_round_ids = response.data["round_ids"]
+        response = vergeai.Group.active_rounds(group_id=group_id)
+        active_rounds = response.data["round_ids"]
 
-        self.assertTrue(round_id in current_round_ids)
-        self.assertTrue(round_id_3 in current_round_ids)
-        self.assertFalse(round_id_2 in current_round_ids)
-        self.assertEqual(len(current_round_ids), 2)
+        self.assertTrue(round_id in active_rounds)
+        self.assertTrue(round_id_3 in active_rounds)
+        self.assertFalse(round_id_2 in active_rounds)
+        self.assertEqual(len(active_rounds), 2)
 
         vergeai.Group.delete(group_id)
 
-    def test_get_current_round_ids_pass_3(self):
+    def test_get_active_rounds_pass_3(self):
         vergeai.api_key = self.api_key
 
         response = vergeai.Group.create(group_name="sim_test_group")
         group_id = response.data["group_id"]
 
-        response = vergeai.Group.current_round_ids(group_id=group_id)
-        current_round_ids = response.data["round_ids"]
+        response = vergeai.Group.active_rounds(group_id=group_id)
+        active_rounds = response.data["round_ids"]
 
-        self.assertEqual(len(current_round_ids), 0)
+        self.assertEqual(len(active_rounds), 0)
 
         vergeai.Group.delete(group_id=group_id)

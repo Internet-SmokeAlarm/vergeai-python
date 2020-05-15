@@ -9,10 +9,10 @@ class UT_GroupTestCase(unittest.TestCase):
         vergeai.client = DummyClient
         resp = vergeai.Group.create(group_name="test_group")
 
-        self.assertEqual("[APIResponse (status_code: 200), (data: {'object_name': \"you called 'post'!\"}), (json: {'status_code': 200, 'data': {'object_name': \"you called 'post'!\"}})]", str(resp))
+        self.assertEqual("[APIResponse (status_code: 200), (data: {'object_name': \"you called 'post'!\"})]", str(resp))
 
     def test_delete_pass(self):
         vergeai.client = DummyClient
         resp = vergeai.Group.delete(group_id="test_group")
 
-        self.assertEqual("[APIResponse (status_code: 200), (data: {'object_name': \"you called 'post'!\"}), (json: {'status_code': 200, 'data': {'object_name': \"you called 'post'!\"}})]", str(resp))
+        self.assertEqual("[APIResponse (status_code: 200), (data: {'object_name': \"you called 'post'!\"})]", str(resp))

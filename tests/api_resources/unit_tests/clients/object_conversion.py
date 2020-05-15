@@ -9,7 +9,3 @@ class UT_ObjectConversionTestCase(unittest.TestCase):
 
         self.assertEqual(converted_obj.status_code, 200)
         self.assertEqual(converted_obj.data, {"object_name" : "woo hoo"})
-        self.assertEqual(converted_obj.json, {
-            "status_code" : 200,
-            "data" : {"object_name" : "woo hoo"}
-        })

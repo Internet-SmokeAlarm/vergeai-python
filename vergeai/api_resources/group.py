@@ -12,7 +12,7 @@ class Group(
     OBJECT_NAME = "group"
 
     @classmethod
-    def current_round_ids(cls, api_key=None, api_version=None, gateway=None, **parameters):
+    def active_rounds(cls, api_key=None, api_version=None, gateway=None, **parameters):
         """
         :param api_key: string
         :param api_version: string

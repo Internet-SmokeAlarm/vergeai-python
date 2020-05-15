@@ -10,10 +10,10 @@ class UT_DummyClientTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, {"object_name" : "you called 'post'!"})
-        self.assertEqual(response.json, {
-            "status_code" : 200,
-            "data" : {"object_name" : "you called 'post'!"}
-        })
 
     def test_get_pass(self):
-        pass
+        client = DummyClient()
+        response = client.get({}, "url")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {"object_name" : "you called 'get'!"})

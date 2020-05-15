@@ -14,10 +14,6 @@ class UT_APIRequestorTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, {"object_name" : "you called 'post'!"})
-        self.assertEqual(response.json, {
-            "status_code" : 200,
-            "data" : {"object_name" : "you called 'post'!"}
-        })
 
     def test_request_get_pass(self):
         vergeai.client = DummyClient
@@ -27,10 +23,6 @@ class UT_APIRequestorTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, {"object_name" : "you called 'get'!"})
-        self.assertEqual(response.json, {
-            "status_code" : 200,
-            "data" : {"object_name" : "you called 'get'!"}
-        })
 
     def test_request_pass_1(self):
         vergeai.client = DummyClient
@@ -40,10 +32,6 @@ class UT_APIRequestorTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, {"object_name" : "you called 'post'!"})
-        self.assertEqual(response.json, {
-            "status_code" : 200,
-            "data" : {"object_name" : "you called 'post'!"}
-        })
 
     def test_request_pass_2(self):
         vergeai.client = DummyClient
@@ -53,7 +41,3 @@ class UT_APIRequestorTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, {"object_name" : "you called 'get'!"})
-        self.assertEqual(response.json, {
-            "status_code" : 200,
-            "data" : {"object_name" : "you called 'get'!"}
-        })
