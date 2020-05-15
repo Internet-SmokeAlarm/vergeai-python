@@ -1,2 +1,0 @@
-from .termination_criteria_utils import TerminationCriteriaUtilsTestCase
-from .duration import DurationTerminationCriteriaTestCase
