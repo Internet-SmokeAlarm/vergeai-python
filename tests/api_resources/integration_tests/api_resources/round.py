@@ -27,8 +27,6 @@ class IT_RoundTestCase(AbstractTestCase):
         vergeai.Group.delete(group_id=group_id)
 
     def test_create_pass_hard(self):
-        return
-        # NOTE: THIS TEST FAILS
         vergeai.api_key = self.api_key
 
         group = vergeai.Group.create(group_name="sim_test_group")
@@ -83,8 +81,6 @@ class IT_RoundTestCase(AbstractTestCase):
         vergeai.Group.delete(group_id=group_id)
 
     def test_create_fail_nonexistant(self):
-        return
-        # THIS DOESNT WORK YET
         vergeai.api_key = self.api_key
 
         response = vergeai.Round.create(
@@ -241,8 +237,6 @@ class IT_RoundTestCase(AbstractTestCase):
         vergeai.Group.delete(group_id=group_id)
 
     def test_get_aggregate_model_fail_nonexistant(self):
-        return
-        # NOTE: THIS TEST FAILS
         vergeai.api_key = self.api_key
 
         response = vergeai.Round.get_aggregate_model(group_id="i_dont_exist", round_id="i_dont_exist")
@@ -307,8 +301,6 @@ class IT_RoundTestCase(AbstractTestCase):
         vergeai.Group.delete(group_id=group_id)
 
     def test_get_fail_nonexistant(self):
-        return
-        # NOTE: THIS TEST FAILS
         vergeai.api_key = self.api_key
 
         response = vergeai.Round.get(group_id="i_dont_exist",round_id="i_dont_exist")
