@@ -83,7 +83,7 @@ class Round(
         return response
 
     @classmethod
-    def wait_for_aggregation(cls,
+    def wait_for_completion(cls,
                              api_key=None,
                              api_version=None,
                              gateway=None,

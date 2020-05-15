@@ -151,7 +151,7 @@ class IT_RoundTestCase(AbstractTestCase):
             model=model_data,
             block=True)
 
-        vergeai.Round.wait_for_aggregation(group_id=group_id, round_id=round_id)
+        vergeai.Round.wait_for_completion(group_id=group_id, round_id=round_id)
 
         response = vergeai.Round.cancel(round_id=round_id)
         round_data = vergeai.Round.get(group_id=group_id, round_id=round_id)
@@ -195,7 +195,7 @@ class IT_RoundTestCase(AbstractTestCase):
             model=model_data,
             block=True)
 
-        vergeai.Round.wait_for_aggregation(group_id=group_id, round_id=round_id)
+        vergeai.Round.wait_for_completion(group_id=group_id, round_id=round_id)
 
         response = vergeai.Round.get_aggregate_model(group_id=group_id, round_id=round_id)
 
