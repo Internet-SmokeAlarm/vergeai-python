@@ -8,21 +8,21 @@ class IT_DeviceTestCase(AbstractTestCase):
     def test_create_pass(self):
         vergeai.api_key = self.api_key
 
-        group_id = vergeai.Group.create(group_name="my_name").data["group_id"]
+        project_id = vergeai.Project.create(project_name="my_name").data["project_id"]
 
-        response = vergeai.Device.create(group_id=group_id)
+        response = vergeai.Device.create(project_id=project_id)
 
         self.assertEqual(response.status_code, 200, response.data)
         self.assertIsNotNone(response.data["device_id"], response.data)
         self.assertIsNotNone(response.data["device_api_key"], response.data)
 
-        vergeai.Group.delete(group_id=group_id)
+        vergeai.Project.delete(project_id=project_id)
 
     def test_create_fail_nonexistant(self):
         self.assertTrue(False)
         vergeai.api_key = self.api_key
 
-        response = vergeai.Device.create(group_id="i_dont_exist")
+        response = vergeai.Device.create(project_id="i_dont_exist")
 
         self.assertEqual(response.status_code, 200, response.data)
 
@@ -32,30 +32,30 @@ class IT_DeviceTestCase(AbstractTestCase):
 
         vergeai.api_key = self.api_key
 
-        group_id = vergeai.Group.create(group_name="my_name").data["group_id"]
+        project_id = vergeai.Project.create(project_name="my_name").data["project_id"]
 
-        device = vergeai.Device.create(group_id=group_id)
+        device = vergeai.Device.create(project_id=project_id)
 
-        response = vergeai.Round.create(
-            group_id=group_id,
+        response = vergeai.Job.create(
+            project_id=project_id,
             device_selection_strategy="RANDOM",
-            previous_round_id="",
+            previous_job_id="",
             num_devices=1,
             num_buffer_devices=0,
             termination_criteria=[])
-        round_id = response.data["round_id"]
+        job_id = response.data["job_id"]
 
-        vergeai.Round.submit_start_model(
-            round_id=round_id,
+        vergeai.Job.submit_start_model(
+            job_id=job_id,
             model=model_data)
 
         response = vergeai.Device.submit_model(
             api_key=device.data["device_api_key"],
-            group_id=group_id,
-            round_id=round_id,
+            project_id=project_id,
+            job_id=job_id,
             device_id=device.data["device_id"],
             model=model_data)
 
         self.assertEqual(response.status_code, 200, response.data)
 
-        vergeai.Group.delete(group_id=group_id)
+        vergeai.Project.delete(project_id=project_id)

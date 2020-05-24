@@ -4,6 +4,7 @@ from .api_requestor import APIRequestor
 from .abstract import *
 from .endpoint_type import *
 
-from .group import Group
-from .round import Round
+from .project import Project
+from .job import Job
 from .device import Device
+from .job_sequence import JobSequence

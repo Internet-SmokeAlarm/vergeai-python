@@ -8,10 +8,10 @@ def url_builder(gateway, version, url, action, parameters):
     """
     base_url = gateway + "/" + version + "/" + url + "/" + action
 
-    if "group_id" in parameters:
-        base_url += "/" + parameters["group_id"]
-    if "round_id" in parameters:
-        base_url += "/" + parameters["round_id"]
+    if "project_id" in parameters:
+        base_url += "/" + parameters["project_id"]
+    if "job_id" in parameters:
+        base_url += "/" + parameters["job_id"]
     if "device_id" in parameters:
         base_url += "/" + parameters["device_id"]
 

@@ -9,13 +9,13 @@ from ..logging import log_debug
 
 from time import sleep
 
-class Round(
+class Job(
     AbstractAPIResource,
     CreatableAPIResource,
     CancelableAPIResource,
     RetrievableAPIResource):
 
-    OBJECT_NAME = "round"
+    OBJECT_NAME = "job"
 
     @classmethod
     def submit_start_model(cls,

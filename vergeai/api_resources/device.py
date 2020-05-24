@@ -35,14 +35,37 @@ class Device(
             response = upload_model_to_s3_helper(model, response.data)
 
         if block:
-            while Device._simple_request(cls,
-                                         "get",
-                                         "is_active",
-                                         api_key,
-                                         api_version,
-                                         gateway,
-                                         **parameters).data["is_device_active"]:
+            while not Device.is_active(api_key=api_key,
+                                       api_version=api_version,
+                                       gateway=gateway,
+                                       **parameters).data["is_device_active"]:
                 log_debug("Submitted device model...Waiting for DB update to complete...")
                 sleep(1)
 
         return response
+
+    @classmethod
+    def is_active(cls,
+                  api_key=None,
+                  api_version=None,
+                  gateway=None,
+                  **parameters):
+        """
+        :param api_key: string
+        :param api_version: string
+        :param gateway: string
+        """
+        return Device._simple_request(cls, "get", "is_active", api_key, api_version, gateway, **parameters)
+
+    @classmethod
+    def register(cls,
+                 api_key=None,
+                 api_version=None,
+                 gateway=None,
+                 **parameters):
+        """
+        :param api_key: string
+        :param api_version: string
+        :param gateway: string
+        """
+        return Device._simple_request(cls, "post", "register", api_key, api_version, gateway, **parameters)
