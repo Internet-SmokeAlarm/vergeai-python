@@ -1,7 +1,7 @@
 import unittest
-
 import vergeai
 from vergeai.clients import DummyClient
+
 
 class UT_DeviceTestCase(unittest.TestCase):
 

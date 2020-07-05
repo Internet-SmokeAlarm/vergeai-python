@@ -1,8 +1,8 @@
 import unittest
-
 import vergeai
 from vergeai.clients import DummyClient
 from vergeai import APIRequestor
+
 
 class UT_APIRequestorTestCase(unittest.TestCase):
 

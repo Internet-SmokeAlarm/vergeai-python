@@ -4,3 +4,4 @@ from .project import UT_ProjectTestCase
 from .job import UT_JobTestCase
 from .experiment import UT_ExperimentTestCase
 from .device import UT_DeviceTestCase
+from .api_key import UT_APIKeyTestCase
