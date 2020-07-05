@@ -1,17 +1,12 @@
-def url_builder(gateway, version, url, action, parameters):
-    """
-    :param gateway: string
-    :param version: string
-    :param url: string
-    :param action: string
-    :param parameters: dict
-    """
+def url_builder(gateway: str, version: str, url: str, action: str, parameters: dict) -> str:
     base_url = gateway + "/" + version + "/" + url + "/" + action
 
-    if "group_id" in parameters:
-        base_url += "/" + parameters["group_id"]
-    if "round_id" in parameters:
-        base_url += "/" + parameters["round_id"]
+    if "project_id" in parameters:
+        base_url += "/" + parameters["project_id"]
+    if "experiment_id" in parameters:
+        base_url += "/" + parameters["experiment_id"]
+    if "job_id" in parameters:
+        base_url += "/" + parameters["job_id"]
     if "device_id" in parameters:
         base_url += "/" + parameters["device_id"]
 

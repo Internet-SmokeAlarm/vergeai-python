@@ -2,13 +2,10 @@ import requests
 import json
 from tempfile import NamedTemporaryFile
 from ...clients import convert_to_vergeai_object
+from ...clients import APIResponse
 
-def upload_model_to_s3_helper(data, url_info):
-    """
-    :param data: serializable object
-    :param url_info: json
-    :return: requests response object
-    """
+
+def upload_model_to_s3_helper(data: dict, url_info: dict) -> APIResponse:
     model_file = NamedTemporaryFile(delete=True)
     try:
         with open(model_file.name, 'w') as f:

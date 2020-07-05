@@ -9,46 +9,13 @@ from ..logging import log_debug
 
 from time import sleep
 
-class Round(
+class Job(
     AbstractAPIResource,
     CreatableAPIResource,
     CancelableAPIResource,
     RetrievableAPIResource):
 
-    OBJECT_NAME = "round"
-
-    @classmethod
-    def submit_start_model(cls,
-                           model=None,
-                           api_key=None,
-                           api_version=None,
-                           gateway=None,
-                           block=False,
-                           **parameters):
-        """
-        :param model: dict
-        :param api_key: string
-        :param api_version: string
-        :param gateway: string
-        :param block: boolean
-        """
-        response = Round._simple_request(cls, "post", "submit_start_model", api_key, api_version, gateway, **parameters)
-
-        if validate_response_ok(response.status_code):
-            response = upload_model_to_s3_helper(model, response.data)
-
-        if block:
-            while Round._simple_request(cls,
-                                        "get",
-                                        "get",
-                                        api_key,
-                                        api_version,
-                                        gateway,
-                                        **parameters).data["status"] == "INITIALIZED":
-                log_debug("Submitted start model...Waiting for DB update to complete...")
-                sleep(1)
-
-        return response
+    OBJECT_NAME = "job"
 
     @classmethod
     def get_start_model(cls, api_key=None, api_version=None, gateway=None, **parameters):
@@ -57,7 +24,7 @@ class Round(
         :param api_version: string
         :param gateway: string
         """
-        response = Round._simple_request(cls, "get", "start_model", api_key, api_version, gateway, **parameters)
+        response = Job._simple_request(cls, "get", "start_model", api_key, api_version, gateway, **parameters)
 
         if validate_response_ok(response.status_code):
             response = download_model_from_s3_helper(response.data)
@@ -75,7 +42,7 @@ class Round(
         :param api_version: string
         :param gateway: string
         """
-        response = Round._simple_request(cls, "get", "aggregate_model", api_key, api_version, gateway, **parameters)
+        response = Job._simple_request(cls, "get", "aggregate_model", api_key, api_version, gateway, **parameters)
 
         if validate_response_ok(response.status_code):
             response = download_model_from_s3_helper(response.data)
@@ -93,12 +60,12 @@ class Round(
         :param api_version: string
         :param gateway: string
         """
-        while Round._simple_request(cls,
+        while Job._simple_request(cls,
                                     "get",
                                     "get",
                                     api_key,
                                     api_version,
                                     gateway,
                                     **parameters).data["status"] != "COMPLETED":
-                log_debug("Round is in progress...Waiting for round to end...")
+                log_debug("Job is in progress...Waiting for round to end...")
                 sleep(1)

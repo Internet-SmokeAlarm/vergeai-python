@@ -1,6 +1,7 @@
 import boto3
 import os
 
+
 if __name__ == '__main__':
     table_name = os.environ["DEV_AUTH_TABLE"]
 
