@@ -1,5 +1,4 @@
 import unittest
-
 import vergeai
 from vergeai.clients import DummyClient
 
@@ -10,16 +9,10 @@ class UT_ExperimentTestCase(unittest.TestCase):
         vergeai.client = DummyClient
         resp = vergeai.Experiment.create(project_id="12312312132")
 
-        self.assertEqual("[APIResponse (status_code: 200), (data: {'object_name': \"you called 'post'!\"})]", str(resp))
+        self.assertEqual("APIResponse(status_code=200, data={'object_name': \"you called 'post'!\"})", str(resp))
 
-    def test_delete_pass(self):
+    def test_get_pass(self):
         vergeai.client = DummyClient
-        resp = vergeai.Experiment.delete(project_id="12312312132", experiment_id="12312312312313")
+        resp = vergeai.Experiment.get(project_id="12312312132", experiment_id="1233423434")
 
-        self.assertEqual("[APIResponse (status_code: 200), (data: {'object_name': \"you called 'post'!\"})]", str(resp))
-
-    def test_submit_start_model_pass(self):
-        vergeai.client = DummyClient
-        resp = vergeai.Experiment.create(project_id="12312312132")
-
-        self.assertEqual("[APIResponse (status_code: 200), (data: {'object_name': \"you called 'post'!\"})]", str(resp))
+        self.assertEqual("APIResponse(status_code=200, data={'object_name': \"you called 'get'!\"})", str(resp))

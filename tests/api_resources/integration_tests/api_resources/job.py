@@ -1,8 +1,7 @@
 import json
-
 import vergeai
-
 from ..abstract_testcase import AbstractTestCase
+
 
 class IT_JobTestCase(AbstractTestCase):
 
@@ -10,20 +9,28 @@ class IT_JobTestCase(AbstractTestCase):
         vergeai.api_key = self.api_key
 
         project_id = vergeai.Project.create(project_name="my_name").data["project_id"]
-        job_sequence_id = vergeai.JobSequence.create(project_id=project_id).data["job_sequence_id"]
+        experiment_id = vergeai.Experiment.create(project_id=project_id).data["ID"]
+
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        vergeai.Experiment.submit_start_model(
+            project_id=project_id,
+            experiment_id=experiment_id,
+            model=model_data,
+            block=True)
 
         vergeai.Device.create(project_id=project_id)
 
         response = vergeai.Job.create(
             project_id=project_id,
             device_selection_strategy="RANDOM",
-            job_sequence_id=job_sequence_id,
+            experiment_id=experiment_id,
             num_devices=1,
             num_buffer_devices=0,
             termination_criteria=[])
 
         self.assertEqual(response.status_code, 200, response.data)
-        self.assertIsNotNone(response.data["job_id"], response.data)
+        self.assertIsNotNone(response.data["ID"], response.data)
 
         vergeai.Project.delete(project_id=project_id)
 
@@ -31,7 +38,15 @@ class IT_JobTestCase(AbstractTestCase):
         vergeai.api_key = self.api_key
 
         project_id = vergeai.Project.create(project_name="sim_test_project").data["project_id"]
-        job_sequence_id = vergeai.JobSequence.create(project_id=project_id).data["job_sequence_id"]
+        experiment_id = vergeai.Experiment.create(project_id=project_id).data["ID"]
+
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        vergeai.Experiment.submit_start_model(
+            project_id=project_id,
+            experiment_id=experiment_id,
+            model=model_data,
+            block=True)
 
         for i in range(10):
             vergeai.Device.create(project_id=project_id)
@@ -41,19 +56,19 @@ class IT_JobTestCase(AbstractTestCase):
             jobs.append(vergeai.Job.create(
                 project_id=project_id,
                 device_selection_strategy="RANDOM",
-                job_sequence_id=job_sequence_id,
+                experiment_id=experiment_id,
                 num_devices=4,
                 num_buffer_devices=2,
                 termination_criteria=[]))
 
-        vergeai.Job.cancel(project_id=project_id, job_id=jobs[0].data["job_id"])
+        vergeai.Job.cancel(project_id=project_id, job_id=jobs[0].data["ID"])
 
         for i in range(len(jobs)):
-            response = vergeai.Job.get(project_id=project_id, job_id=jobs[i].data["job_id"])
+            response = vergeai.Job.get(project_id=project_id, job_id=jobs[i].data["ID"])
 
             self.assertEqual(response.status_code, 200, response.data)
 
-        response_2 = vergeai.Job.get(project_id=project_id, job_id=jobs[1].data["job_id"])
+        response_2 = vergeai.Job.get(project_id=project_id, job_id=jobs[1].data["ID"])
         self.assertEqual(response_2.data["status"], "IN_PROGRESS", response_2.data)
 
         vergeai.Project.delete(project_id=project_id)
@@ -62,12 +77,20 @@ class IT_JobTestCase(AbstractTestCase):
         vergeai.api_key = self.api_key
 
         project_id = vergeai.Project.create(project_name="my_name").data["project_id"]
-        job_sequence_id = vergeai.JobSequence.create(project_id=project_id).data["job_sequence_id"]
+        experiment_id = vergeai.Experiment.create(project_id=project_id).data["ID"]
+
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        vergeai.Experiment.submit_start_model(
+            project_id=project_id,
+            experiment_id=experiment_id,
+            model=model_data,
+            block=True)
 
         response = vergeai.Job.create(
             project_id=project_id,
             device_selection_strategy="RANDOM",
-            job_sequence_id=job_sequence_id,
+            experiment_id=experiment_id,
             num_devices=10,
             num_buffer_devices=2,
             termination_criteria=[])
@@ -82,29 +105,37 @@ class IT_JobTestCase(AbstractTestCase):
         response = vergeai.Job.create(
             project_id="i_dont_exist",
             device_selection_strategy="RANDOM",
-            job_sequence_id="",
+            experiment_id="",
             num_devices=1,
             num_buffer_devices=0,
             termination_criteria=[])
 
-        self.assertEqual(response.status_code, 403, response.data)
+        self.assertEqual(response.status_code, 400, response.data)
 
     def test_cancel_pass(self):
         vergeai.api_key = self.api_key
 
         project_id = vergeai.Project.create(project_name="my_name").data["project_id"]
-        job_sequence_id = vergeai.JobSequence.create(project_id=project_id).data["job_sequence_id"]
+        experiment_id = vergeai.Experiment.create(project_id=project_id).data["ID"]
+
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        vergeai.Experiment.submit_start_model(
+            project_id=project_id,
+            experiment_id=experiment_id,
+            model=model_data,
+            block=True)
 
         vergeai.Device.create(project_id=project_id)
 
         response = vergeai.Job.create(
             project_id=project_id,
             device_selection_strategy="RANDOM",
-            job_sequence_id=job_sequence_id,
+            experiment_id=experiment_id,
             num_devices=1,
             num_buffer_devices=0,
             termination_criteria=[])
-        job_id = response.data["job_id"]
+        job_id = response.data["ID"]
 
         response = vergeai.Job.cancel(project_id=project_id, job_id=job_id)
         job_data = vergeai.Job.get(project_id=project_id, job_id=job_id).data
@@ -118,7 +149,15 @@ class IT_JobTestCase(AbstractTestCase):
         vergeai.api_key = self.api_key
 
         project_id = vergeai.Project.create(project_name="my_name").data["project_id"]
-        job_sequence_id = vergeai.JobSequence.create(project_id=project_id).data["job_sequence_id"]
+        experiment_id = vergeai.Experiment.create(project_id=project_id).data["ID"]
+
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        vergeai.Experiment.submit_start_model(
+            project_id=project_id,
+            experiment_id=experiment_id,
+            model=model_data,
+            block=True)
 
         device = vergeai.Device.create(project_id=project_id)
         device_id = device.data["device_id"]
@@ -126,19 +165,11 @@ class IT_JobTestCase(AbstractTestCase):
         response = vergeai.Job.create(
             project_id=project_id,
             device_selection_strategy="RANDOM",
-            job_sequence_id=job_sequence_id,
+            experiment_id=experiment_id,
             num_devices=1,
             num_buffer_devices=0,
             termination_criteria=[])
-        job_id = response.data["job_id"]
-
-        with open("tests/data/mnist_cnn.json", "r") as f:
-            model_data = json.load(f)
-
-        vergeai.JobSequence.submit_start_model(
-            project_id=project_id,
-            model=model_data,
-            block=True)
+        job_id = response.data["ID"]
 
         vergeai.Device.submit_model(
             api_key=device.data["device_api_key"],
@@ -162,7 +193,15 @@ class IT_JobTestCase(AbstractTestCase):
         vergeai.api_key = self.api_key
 
         project_id = vergeai.Project.create(project_name="my_name").data["project_id"]
-        job_sequence_id = vergeai.JobSequence.create(project_id=project_id).data["job_sequence_id"]
+        experiment_id = vergeai.Experiment.create(project_id=project_id).data["ID"]
+
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        vergeai.Experiment.submit_start_model(
+            project_id=project_id,
+            experiment_id=experiment_id,
+            model=model_data,
+            block=True)
 
         device = vergeai.Device.create(project_id=project_id)
         device_id = device.data["device_id"]
@@ -170,19 +209,11 @@ class IT_JobTestCase(AbstractTestCase):
         response = vergeai.Job.create(
             project_id=project_id,
             device_selection_strategy="RANDOM",
-            job_sequence_id=job_sequence_id,
+            experiment_id=experiment_id,
             num_devices=1,
             num_buffer_devices=0,
             termination_criteria=[])
-        job_id = response.data["job_id"]
-
-        with open("tests/data/mnist_cnn.json", "r") as f:
-            model_data = json.load(f)
-
-        vergeai.JobSequence.submit_start_model(
-            project_id=project_id,
-            model=model_data,
-            block=True)
+        job_id = response.data["ID"]
 
         vergeai.Device.submit_model(
             api_key=device.data["device_api_key"],
@@ -205,7 +236,15 @@ class IT_JobTestCase(AbstractTestCase):
         vergeai.api_key = self.api_key
 
         project_id = vergeai.Project.create(project_name="my_name").data["project_id"]
-        job_sequence_id = vergeai.JobSequence.create(project_id=project_id).data["job_sequence_id"]
+        experiment_id = vergeai.Experiment.create(project_id=project_id).data["ID"]
+
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        vergeai.Experiment.submit_start_model(
+            project_id=project_id,
+            experiment_id=experiment_id,
+            model=model_data,
+            block=True)
 
         device = vergeai.Device.create(project_id=project_id)
         device_id = device.data["device_id"]
@@ -213,19 +252,11 @@ class IT_JobTestCase(AbstractTestCase):
         response = vergeai.Job.create(
             project_id=project_id,
             device_selection_strategy="RANDOM",
-            job_sequence_id=job_sequence_id,
+            experiment_id=experiment_id,
             num_devices=1,
             num_buffer_devices=0,
             termination_criteria=[])
-        job_id = response.data["job_id"]
-
-        with open("tests/data/mnist_cnn.json", "r") as f:
-            model_data = json.load(f)
-
-        vergeai.JobSequence.submit_start_model(
-            project_id=project_id,
-            model=model_data,
-            block=True)
+        job_id = response.data["ID"]
 
         response = vergeai.Job.get_aggregate_model(project_id=project_id, job_id=job_id)
 
@@ -238,32 +269,32 @@ class IT_JobTestCase(AbstractTestCase):
 
         response = vergeai.Job.get_aggregate_model(project_id="i_dont_exist", job_id="i_dont_exist")
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 400)
 
     def test_get_start_model_pass(self):
-        with open("tests/data/mnist_cnn.json", "r") as f:
-            model_data = json.load(f)
-
         vergeai.api_key = self.api_key
 
         project_id = vergeai.Project.create(project_name="my_name").data["project_id"]
-        job_sequence_id = vergeai.JobSequence.create(project_id=project_id).data["job_sequence_id"]
+        experiment_id = vergeai.Experiment.create(project_id=project_id).data["ID"]
+
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        vergeai.Experiment.submit_start_model(
+            project_id=project_id,
+            experiment_id=experiment_id,
+            model=model_data,
+            block=True)
 
         vergeai.Device.create(project_id=project_id)
 
         response = vergeai.Job.create(
             project_id=project_id,
             device_selection_strategy="RANDOM",
-            job_sequence_id=job_sequence_id,
+            experiment_id=experiment_id,
             num_devices=1,
             num_buffer_devices=0,
             termination_criteria=[])
-        job_id = response.data["job_id"]
-
-        vergeai.JobSequence.submit_start_model(
-            project_id=project_id,
-            model=model_data,
-            block=True)
+        job_id = response.data["ID"]
 
         response = vergeai.Job.get_start_model(project_id=project_id, job_id=job_id)
 
@@ -276,18 +307,26 @@ class IT_JobTestCase(AbstractTestCase):
         vergeai.api_key = self.api_key
 
         project_id = vergeai.Project.create(project_name="my_name").data["project_id"]
-        job_sequence_id = vergeai.JobSequence.create(project_id=project_id).data["job_sequence_id"]
+        experiment_id = vergeai.Experiment.create(project_id=project_id).data["ID"]
+
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        vergeai.Experiment.submit_start_model(
+            project_id=project_id,
+            experiment_id=experiment_id,
+            model=model_data,
+            block=True)
 
         vergeai.Device.create(project_id=project_id)
 
         response = vergeai.Job.create(
             project_id=project_id,
             device_selection_strategy="RANDOM",
-            job_sequence_id=job_sequence_id,
+            experiment_id=experiment_id,
             num_devices=1,
             num_buffer_devices=0,
             termination_criteria=[])
-        job_id = response.data["job_id"]
+        job_id = response.data["ID"]
 
         response = vergeai.Job.get(project_id=project_id, job_id=job_id)
 
@@ -303,4 +342,4 @@ class IT_JobTestCase(AbstractTestCase):
 
         response = vergeai.Job.get(project_id="i_dont_exist",job_id="i_dont_exist")
 
-        self.assertEqual(response.status_code, 403, response.data)
+        self.assertEqual(response.status_code, 400, response.data)

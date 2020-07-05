@@ -18,39 +18,6 @@ class Job(
     OBJECT_NAME = "job"
 
     @classmethod
-    def submit_start_model(cls,
-                           model=None,
-                           api_key=None,
-                           api_version=None,
-                           gateway=None,
-                           block=False,
-                           **parameters):
-        """
-        :param model: dict
-        :param api_key: string
-        :param api_version: string
-        :param gateway: string
-        :param block: boolean
-        """
-        response = Job._simple_request(cls, "post", "submit_start_model", api_key, api_version, gateway, **parameters)
-
-        if validate_response_ok(response.status_code):
-            response = upload_model_to_s3_helper(model, response.data)
-
-        if block:
-            while Job._simple_request(cls,
-                                        "get",
-                                        "get",
-                                        api_key,
-                                        api_version,
-                                        gateway,
-                                        **parameters).data["status"] == "INITIALIZED":
-                log_debug("Submitted start model...Waiting for DB update to complete...")
-                sleep(1)
-
-        return response
-
-    @classmethod
     def get_start_model(cls, api_key=None, api_version=None, gateway=None, **parameters):
         """
         :param api_key: string

@@ -1,6 +1,7 @@
 import vergeai
-
+import json
 from ..abstract_testcase import AbstractTestCase
+
 
 class IT_ProjectTestCase(AbstractTestCase):
 
@@ -34,13 +35,23 @@ class IT_ProjectTestCase(AbstractTestCase):
 
         vergeai.Device.create(project_id=project_id)
 
+        experiment = vergeai.Experiment.create(project_id=project_id).data
+
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        vergeai.Experiment.submit_start_model(
+            project_id=project_id,
+            experiment_id=experiment["ID"],
+            model=model_data,
+            block=True)
+
         job_id = vergeai.Job.create(
             project_id=project_id,
             device_selection_strategy="RANDOM",
-            job_sequence_id="",
+            experiment_id=experiment["ID"],
             num_devices=1,
             num_buffer_devices=0,
-            termination_criteria=[]).data["job_id"]
+            termination_criteria=[]).data["ID"]
 
         response = vergeai.Project.active_jobs(project_id=project_id)
         active_jobs = response.data["job_ids"]
@@ -48,7 +59,7 @@ class IT_ProjectTestCase(AbstractTestCase):
         self.assertTrue(job_id in active_jobs)
         self.assertEqual(len(active_jobs), 1)
 
-        vergeai.Project.delete(project_id)
+        vergeai.Project.delete(project_id=project_id)
 
     def test_get_active_jobs_pass_2(self):
         vergeai.api_key = self.api_key
@@ -57,39 +68,56 @@ class IT_ProjectTestCase(AbstractTestCase):
 
         vergeai.Device.create(project_id=project_id)
 
+        experiment = vergeai.Experiment.create(project_id=project_id).data
+        experiment_2 = vergeai.Experiment.create(project_id=project_id).data
+
+        with open("tests/data/mnist_cnn.json", "r") as f:
+            model_data = json.load(f)
+        vergeai.Experiment.submit_start_model(
+            project_id=project_id,
+            experiment_id=experiment["ID"],
+            model=model_data,
+            block=True)
+
+        vergeai.Experiment.submit_start_model(
+            project_id=project_id,
+            experiment_id=experiment_2["ID"],
+            model=model_data,
+            block=True)
+
         job_id = vergeai.Job.create(
             project_id=project_id,
             device_selection_strategy="RANDOM",
-            job_sequence_id="",
+            experiment_id=experiment["ID"],
             num_devices=1,
             num_buffer_devices=0,
-            termination_criteria=[]).data["job_id"]
+            termination_criteria=[]).data["ID"]
 
         job_id_2 = vergeai.Job.create(
             project_id=project_id,
             device_selection_strategy="RANDOM",
-            job_sequence_id=job_id,
+            experiment_id=experiment_2["ID"],
             num_devices=1,
             num_buffer_devices=0,
-            termination_criteria=[]).data["job_id"]
+            termination_criteria=[]).data["ID"]
 
         job_id_3 = vergeai.Job.create(
             project_id=project_id,
             device_selection_strategy="RANDOM",
-            job_sequence_id="",
+            experiment_id=experiment["ID"],
             num_devices=1,
             num_buffer_devices=0,
-            termination_criteria=[]).data["job_id"]
+            termination_criteria=[]).data["ID"]
 
         response = vergeai.Project.active_jobs(project_id=project_id)
         active_jobs = response.data["job_ids"]
 
         self.assertTrue(job_id in active_jobs)
-        self.assertTrue(job_id_3 in active_jobs)
-        self.assertFalse(job_id_2 in active_jobs)
+        self.assertFalse(job_id_3 in active_jobs)
+        self.assertTrue(job_id_2 in active_jobs)
         self.assertEqual(len(active_jobs), 2)
 
-        vergeai.Project.delete(project_id)
+        vergeai.Project.delete(project_id=project_id)
 
     def test_get_active_jobs_pass_3(self):
         vergeai.api_key = self.api_key

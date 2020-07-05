@@ -7,4 +7,4 @@ from .endpoint_type import *
 from .project import Project
 from .job import Job
 from .device import Device
-from .job_sequence import JobSequence
+from .experiment import Experiment
