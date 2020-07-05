@@ -1,7 +1,7 @@
 from loguru import logger
 import sys
 
-def initialize_logger(log_lvl):
+def initialize_logger(log_lvl: str):
     logger.remove()
     logger.add(sys.stdout, level=log_lvl)
 

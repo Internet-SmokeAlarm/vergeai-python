@@ -18,4 +18,4 @@ class Project(
         :param api_version: string
         :param gateway:string
         """
-        return RetrievableAPIResource._simple_request(cls, "get", "active_jobs", api_key, api_version, gateway, **parameters)
+        return Project._simple_request(cls, "get", "active_jobs", api_key, api_version, gateway, **parameters)

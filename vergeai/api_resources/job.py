@@ -32,13 +32,13 @@ class Job(
         :param gateway: string
         :param block: boolean
         """
-        response = Round._simple_request(cls, "post", "submit_start_model", api_key, api_version, gateway, **parameters)
+        response = Job._simple_request(cls, "post", "submit_start_model", api_key, api_version, gateway, **parameters)
 
         if validate_response_ok(response.status_code):
             response = upload_model_to_s3_helper(model, response.data)
 
         if block:
-            while Round._simple_request(cls,
+            while Job._simple_request(cls,
                                         "get",
                                         "get",
                                         api_key,
@@ -57,7 +57,7 @@ class Job(
         :param api_version: string
         :param gateway: string
         """
-        response = Round._simple_request(cls, "get", "start_model", api_key, api_version, gateway, **parameters)
+        response = Job._simple_request(cls, "get", "start_model", api_key, api_version, gateway, **parameters)
 
         if validate_response_ok(response.status_code):
             response = download_model_from_s3_helper(response.data)
@@ -75,7 +75,7 @@ class Job(
         :param api_version: string
         :param gateway: string
         """
-        response = Round._simple_request(cls, "get", "aggregate_model", api_key, api_version, gateway, **parameters)
+        response = Job._simple_request(cls, "get", "aggregate_model", api_key, api_version, gateway, **parameters)
 
         if validate_response_ok(response.status_code):
             response = download_model_from_s3_helper(response.data)
@@ -93,12 +93,12 @@ class Job(
         :param api_version: string
         :param gateway: string
         """
-        while Round._simple_request(cls,
+        while Job._simple_request(cls,
                                     "get",
                                     "get",
                                     api_key,
                                     api_version,
                                     gateway,
                                     **parameters).data["status"] != "COMPLETED":
-                log_debug("Round is in progress...Waiting for round to end...")
+                log_debug("Job is in progress...Waiting for round to end...")
                 sleep(1)
