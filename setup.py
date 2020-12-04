@@ -10,9 +10,9 @@ setup(
     maintainer_email = "valetolpegin@gmail.com",
     packages = find_packages(exclude = ('tests', 'doc')),
     install_requires = [
-        'requests==2.22.0',
-        'numpy==1.18.0',
-        'loguru==0.4.1'],
+        'requests==2.25.0',
+        'numpy==1.19.4',
+        'loguru==0.5.3'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Framework :: Sphinx',
