@@ -2,7 +2,6 @@ from .endpoint_type import CreatableAPIResource
 from .endpoint_type import CancelableAPIResource
 from .endpoint_type import RetrievableAPIResource
 from .abstract import AbstractAPIResource
-from .utils import upload_model_to_s3_helper
 from .utils import download_model_from_s3_helper
 from .utils import validate_response_ok
 from ..logging import log_debug

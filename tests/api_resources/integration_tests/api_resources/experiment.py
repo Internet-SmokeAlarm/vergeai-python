@@ -8,8 +8,18 @@ class IT_ExperimentTestCase(AbstractTestCase):
     def test_create_pass(self):
         vergeai.api_key = self.api_key
 
-        project_id = vergeai.Project.create(project_name="my_name").data["project_id"]
-        response = vergeai.Experiment.create(project_id=project_id)
+        project_id = vergeai.Project.create(project_name="my_name", project_description="N/A").data["ID"]
+        response = vergeai.Experiment.create(
+            project_id=project_id,
+            experiment_name="test experiment",
+            experiment_description="test experiment description",
+            runtime="CUSTOM",
+            initialization_strategy="CUSTOMER_PROVIDED",
+            data_collection="MINIMAL_RETAIN",
+            aggregation_strategy="AVERAGE",
+            ml_type="NN",
+            code="print(\"Hello world!\")",
+            learning_parameters=dict())
 
         self.assertEqual(response.status_code, 200, response.data)
         self.assertIsNotNone(response.data["ID"], response.data)
@@ -23,12 +33,22 @@ class IT_ExperimentTestCase(AbstractTestCase):
     def test_get_pass(self):
         vergeai.api_key = self.api_key
 
-        project_id = vergeai.Project.create(project_name="my_name").data["project_id"]
-        experiment_id = vergeai.Experiment.create(project_id=project_id).data["ID"]
+        project_id = vergeai.Project.create(project_name="my_name", project_description="N/A").data["ID"]
+        experiment_id = vergeai.Experiment.create(
+            project_id=project_id,
+            experiment_name="test experiment",
+            experiment_description="test experiment description",
+            runtime="CUSTOM",
+            initialization_strategy="CUSTOMER_PROVIDED",
+            data_collection="MINIMAL_RETAIN",
+            aggregation_strategy="AVERAGE",
+            ml_type="NN",
+            code="print(\"Hello world!\")",
+            learning_parameters=dict()).data["ID"]
         response = vergeai.Experiment.get(project_id=project_id, experiment_id=experiment_id)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, {'ID': experiment_id, 'jobs': [], 'hyperparameters': {}, 'current_job': 'NONE', 'start_model': {}, 'current_model': {}, 'is_active': False})
+        self.assertEqual(response.data["ID"], experiment_id)
 
         vergeai.Project.delete(project_id=project_id)
 
@@ -38,8 +58,18 @@ class IT_ExperimentTestCase(AbstractTestCase):
 
         vergeai.api_key = self.api_key
 
-        project_id = vergeai.Project.create(project_name="my_name").data["project_id"]
-        experiment_id = vergeai.Experiment.create(project_id=project_id).data["ID"]
+        project_id = vergeai.Project.create(project_name="my_name", project_description="N/A").data["ID"]
+        experiment_id = vergeai.Experiment.create(
+            project_id=project_id,
+            experiment_name="test experiment",
+            experiment_description="test experiment description",
+            runtime="CUSTOM",
+            initialization_strategy="CUSTOMER_PROVIDED",
+            data_collection="MINIMAL_RETAIN",
+            aggregation_strategy="AVERAGE",
+            ml_type="NN",
+            code="print(\"Hello world!\")",
+            learning_parameters=dict()).data["ID"]
 
         device = vergeai.Device.create(project_id=project_id)
 

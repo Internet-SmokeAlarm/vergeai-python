@@ -20,20 +20,11 @@ class Device(
                      api_key: str = None,
                      api_version: str = None,
                      gateway: str = None,
-                     block: bool = False,
                      **parameters):
         response = Device._simple_request(cls, "post", "submit_model_update", api_key, api_version, gateway, **parameters)
 
         if validate_response_ok(response.status_code):
             response = upload_model_to_s3_helper(model, response.data)
-
-        if block:
-            while Device.is_active(api_key=api_key,
-                                   api_version=api_version,
-                                   gateway=gateway,
-                                   **parameters).data["is_device_active"]:
-                log_debug("Submitted device model...Waiting for DB update to complete...")
-                sleep(1)
 
         return response
 

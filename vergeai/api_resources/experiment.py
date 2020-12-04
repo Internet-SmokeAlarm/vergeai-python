@@ -35,7 +35,7 @@ class Experiment(
                                              api_key,
                                              api_version,
                                              gateway,
-                                             **parameters).data["start_model"] == {}:
+                                             **parameters).data["configuration"]["parameters"] == {}:
                 log_debug("Submitted start model...Waiting for DB update to complete...")
                 sleep(1)
 

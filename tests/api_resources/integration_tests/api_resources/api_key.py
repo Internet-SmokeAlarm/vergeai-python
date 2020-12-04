@@ -7,6 +7,6 @@ class IT_APIKeyTestCase(AbstractTestCase):
     def test_create_pass(self):
         vergeai.api_key = self.api_key
 
-        key_plaintext = vergeai.APIKey.create().data["key"]
+        response = vergeai.APIKey.create()
 
-        self.assertIsNotNone(key_plaintext)
+        self.assertIsNotNone(response.data["key"])
