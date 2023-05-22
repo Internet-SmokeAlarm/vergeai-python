@@ -10,7 +10,7 @@ setup(
     maintainer_email = "valetolpegin@gmail.com",
     packages = find_packages(exclude = ('tests', 'doc')),
     install_requires = [
-        'requests==2.22.0',
+        'requests==2.31.0',
         'numpy==1.18.0',
         'loguru==0.4.1'],
     classifiers=[
