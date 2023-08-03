@@ -12,7 +12,7 @@ setup(
     install_requires = [
         'requests==2.22.0',
         'numpy==1.18.0',
-        'loguru==0.4.1'],
+        'loguru==0.5.3'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Framework :: Sphinx',
